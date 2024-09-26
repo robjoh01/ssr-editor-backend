@@ -1,0 +1,37 @@
+{
+    "name": "backend",
+    "version": "1.0.0",
+    "description": "Backend for a starter project for DV1677 JSRamverk",
+    "main": "app.js",
+    "type": "module",
+    "scripts": {
+        "test": "nyc --reporter=html --reporter=text --reporter=clover mocha --exit --timeout 10000",
+        "lint": "npm run eslint",
+        "start": "nodemon src/server.mjs",
+        "clean": "rm -rf node_modules package-lock.json",
+        "eslint": "eslint ."
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.5",
+        "ejs": "^3.1.10",
+        "express": "^4.21.0",
+        "express-file-routing": "^3.0.3",
+        "highlight.js": "^11.10.0",
+        "marked": "^14.1.2",
+        "marked-highlight": "^2.1.4",
+        "mongodb": "^6.9.0",
+        "morgan": "^1.10.0"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.11.1",
+        "chai": "^5.1.1",
+        "chai-http": "^5.0.0",
+        "eslint": "^9.11.1",
+        "globals": "^15.9.0",
+        "mocha": "^10.7.3"
+    }
+}
