@@ -1,4 +1,4 @@
-![Banner](https://raw.githubusercontent.com/robjoh01/ssr-editor-frontend/main/public/img/banner.png)
+![Banner](public/img/ssr_editor.jpg)
 
 <div align="center">
 
@@ -13,8 +13,29 @@ The backend of a starter project for the [DV1677 JSRamverk](https://jsramverk.se
 
 </div>
 
-## Frameworks
+## Frameworks & Libraries
 
 - [MongoDB](https://www.mongodb.com)
+- [Node.js](https://nodejs.org)
+- [NPM](https://www.npmjs.com)
+- [Express](https://expressjs.com)
+- [Eslint](https://eslint.org)
+- [Mocha](https://mochajs.org)
+- [Chai](https://www.chaijs.com)
 
 ## Getting Started
+
+Create an `.env` file with the following content:
+
+```bash
+PORT=8080
+NODE_ENV="<test|production>"
+DB_USER="<username>"
+DB_PASS="<password>"
+```
+
+Then run `npm install` and `npm start`
+
+## Testing
+
+Run `npm test` to run all unit tests and see the coverage report.
