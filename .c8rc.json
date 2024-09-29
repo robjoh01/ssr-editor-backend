@@ -1,5 +1,5 @@
 {
-    "reporter": ["html", "text", "clover"],
+    "reporter": ["html", "text", "clover", "json-summary"],
     "extension": [".js", ".jsx", ".mjs"],
     "exclude": ["src/tests/**/*.js", "src/views/**/*.js", "src/server.mjs"],
     "statements": 80,

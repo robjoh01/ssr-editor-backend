@@ -4,6 +4,7 @@
 
 The backend of a starter project for the [DV1677 JSRamverk](https://jsramverk.se) course.
 
+[![cov](https://robjoh01.github.io/ssr-editor-backend/badges/coverage.svg)](https://github.com/robjoh01/ssr-editor-backend/actions)
 ![Stars](https://img.shields.io/github/stars/robjoh01/ssr-editor-backend)
 
 ![Issues](https://img.shields.io/github/issues/robjoh01/ssr-editor-backend)
