@@ -8,7 +8,7 @@ const database = {
         let dsn = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@jsramverk.edlj3.mongodb.net/?retryWrites=true&w=majority&appName=jsramverk`
 
         if (process.env.NODE_ENV === "test") {
-            dsn = `mongodb://localhost:27017/test`
+            dsn = "mongodb://localhost:27017/test"
         }
 
         // Create a MongoClient with a MongoClientOptions object to set the Stable API version

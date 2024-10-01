@@ -19,7 +19,7 @@ import "./database.mjs"
 import { router } from "express-file-routing"
 
 // Express server
-const port = process.env.DBWEBB_PORT || 1337
+const port = process.env.PORT || 1337
 const app = express()
 
 app.disable("x-powered-by")

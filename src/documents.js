@@ -1,18 +1,29 @@
 "use strict"
 
 import database from "./database.mjs"
-import { ObjectId, Timestamp } from "mongodb"
+import { ObjectId } from "mongodb"
 
 const documents = {
-    reformat: ({ ...document }) => {
+    reformat: (document) => {
+        if (!document._id) {
+            throw new Error("Document is missing the '_id' field.")
+        }
+
         return {
-            id: document._id.toString(),
-            title: document.title,
-            content: document.content,
-            createdAt: new Date(document.created_at),
-            updatedAt: new Date(document.updated_at),
-            ownerId: document.owner_id.toString(),
-            isLocked: document.is_locked,
+            id: document._id ? document._id.toString() : null,
+            title: document.title || "Untitled",
+            content: document.content || "",
+            createdAt: document.created_at
+                ? new Date(document.created_at)
+                : new Date(),
+            updatedAt: document.updated_at
+                ? new Date(document.updated_at)
+                : new Date(),
+            ownerId: document.owner_id ? document.owner_id.toString() : null,
+            isLocked:
+                typeof document.is_locked === "boolean"
+                    ? document.is_locked
+                    : false,
         }
     },
 
@@ -198,10 +209,12 @@ const documents = {
      * @return {Promise<void>} - Void.
      */
     reset: async (initialDocuments) => {
+        if (!initialDocuments) throw new Error("Missing initial documents")
+
         const db = await database.getInstance()
 
         try {
-            await db.collection.deleteMany()
+            await db.collection.deleteMany({}) // Delete all documents
             await db.collection.insertMany(initialDocuments)
         } catch (err) {
             console.error(err)
