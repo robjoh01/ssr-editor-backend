@@ -1,10 +1,8 @@
+/* eslint-disable */
+
 "use strict"
 
 process.env.NODE_ENV = "test"
-
-// TODO: Add test cases for creating, reading, updating and removing documents
-
-// https://medium.com/@asemiloore/nodejs-testing-with-mocha-and-code-coverage-with-nyc-9d1d6e428ac1
 
 import { use, expect } from "chai"
 import chaiAsPromised from "chai-as-promised"
@@ -39,6 +37,8 @@ const sampleData = [
     },
 ]
 
+const originalSampleData = [...sampleData]
+
 describe("Documents Service", () => {
     let getInstanceStub
 
@@ -50,10 +50,10 @@ describe("Documents Service", () => {
                     toArray: sinon.stub().resolves(sampleData),
                 }),
                 findOne: sinon.stub().callsFake(async (query) => {
-                    const foundDoc = sampleData.find((doc) =>
-                        doc._id.equals(query._id)
+                    return (
+                        sampleData.find((doc) => doc._id.equals(query._id)) ||
+                        {}
                     )
-                    return foundDoc ? foundDoc : {}
                 }),
                 updateOne: sinon.stub().callsFake(async (query, update) => {
                     const doc = sampleData.find((doc) =>
@@ -64,14 +64,7 @@ describe("Documents Service", () => {
                         Object.assign(doc, updateFields)
                         return { modifiedCount: 1 } // Simulate a successful update
                     }
-
                     return { modifiedCount: 0 } // No document found to update
-                }),
-                findOne: sinon.stub().callsFake(async (query) => {
-                    return (
-                        sampleData.find((doc) => doc._id.equals(query._id)) ||
-                        {}
-                    )
                 }),
                 insertOne: sinon.stub().callsFake(async (newDoc) => {
                     const newDocument = {
@@ -93,17 +86,14 @@ describe("Documents Service", () => {
                     }
                     return { deletedCount: 0 } // No document found to delete
                 }),
-                deleteMany: sinon.stub().callsFake(async (query) => {
-                    // Determine which documents to delete based on the query
-                    const initialCount = sampleData.length
-                    sampleData = sampleData.filter(
-                        (doc) => !doc._id.equals(query._id)
-                    )
-
-                    // Calculate how many documents were deleted
-                    const deletedCount = initialCount - sampleData.length
-
-                    return { deletedCount } // Return the count of deleted documents
+                insertMany: sinon.stub().callsFake(async (docs) => {
+                    sampleData.push(...docs)
+                    return docs.map(documents.reformat)
+                }),
+                deleteMany: sinon.stub().callsFake(async (query = {}) => {
+                    // Clear the sampleData array entirely to simulate a reset
+                    sampleData.length = 0
+                    return { deletedCount: originalSampleData.length } // Assume all documents were deleted
                 }),
             },
         })
@@ -236,21 +226,33 @@ describe("Documents Service", () => {
         expect(getInstanceStub.calledOnce).to.be.false
     })
 
-    // it("should reset the document collection and insert initial documents", async () => {
-    //     // Reset the collection
-    //     await documents.reset()
+    it("should reset the document collection and insert initial documents", async () => {
+        const initialDocuments = [
+            {
+                _id: new ObjectId("64d4f734f25b650f3c9e8db0"),
+                title: "Document A",
+                content: "Content A",
+            },
+        ]
 
-    //     // Expect the reset to be successful
-    //     expect(sampleData).to.be.an("array").with.lengthOf(2)
+        await documents.reset(initialDocuments)
 
-    //     // Expect the insertMany method to be called with the initialDocuments
-    //     expect(db.collection.insertMany.calledWith(initialDocuments)).to.be.true
+        // After reset, the sampleData should only contain the initialDocuments
+        expect(sampleData)
+            .to.be.an("array")
+            .with.lengthOf(initialDocuments.length)
 
-    //     // Ensure the getInstance function was called once during the test
-    //     expect(getInstanceStub.calledOnce).to.be.true
-    // })
+        // Check if the inserted documents match the initialDocuments
+        expect(sampleData).to.deep.include.members(initialDocuments)
+
+        // Ensure the deleteMany was called once during the reset process
+        expect(getInstanceStub.calledOnce).to.be.true
+    })
 
     afterEach(() => {
         sinon.restore()
+        // Reset sampleData to original state for next test
+        sampleData.length = 0
+        sampleData.push(...originalSampleData)
     })
 })

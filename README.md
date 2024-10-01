@@ -14,6 +14,10 @@ The backend of a starter project for the [DV1677 JSRamverk](https://jsramverk.se
 
 </div>
 
+## Overview
+
+SSR-Editor uses **WebSockets** for real-time communication, enabling live collaboration on documents. **MongoDB** serves as the database, handling document storage and retrieval, ensuring all changes are saved efficiently. The backend manages synchronization between users and maintains data consistency during collaborative editing.
+
 ## Frameworks & Libraries
 
 - [MongoDB](https://www.mongodb.com)
@@ -26,17 +30,32 @@ The backend of a starter project for the [DV1677 JSRamverk](https://jsramverk.se
 
 ## Getting Started
 
-Create an `.env` file with the following content:
+1. Create an `.env` file in the project root with the following content:
+   ```bash
+   PORT=8080
+   NODE_ENV="<test|production>"
+   DB_USER="<username>"
+   DB_PASS="<password>"
+   ```
 
-```bash
-PORT=8080
-NODE_ENV="<test|production>"
-DB_USER="<username>"
-DB_PASS="<password>"
-```
+2. Install the necessary dependencies:
+   ```bash
+   npm install
+   ```
 
-Then run `npm install` and `npm start`
+3. Start the application:
+   ```bash
+   npm run start
+   ```
 
 ## Testing
 
-Run `npm test` to run all unit tests and see the coverage report.
+1. To run unit tests:
+   ```bash
+   npm run test
+   ```
+
+2. To generate and view the test coverage report:
+   ```bash
+   npm run coverage
+   ```

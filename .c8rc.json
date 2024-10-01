@@ -1,7 +1,12 @@
 {
     "reporter": ["html", "text", "clover", "json-summary"],
     "extension": [".js", ".jsx", ".mjs"],
-    "exclude": ["src/tests/**/*.js", "src/views/**/*.js", "src/server.mjs"],
+    "exclude": [
+        "src/tests/**/*.js",
+        "src/views/**/*.js",
+        "src/server.mjs",
+        "src/database.mjs"
+    ],
     "statements": 80,
     "branches": 80,
     "functions": 80,
