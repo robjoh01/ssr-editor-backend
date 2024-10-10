@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "target": "es6",
+        "paths": {
+            "@/*": ["./src/*"],
+            "@utils/*": ["./src/utils/*"],
+            "@views/*": ["./src/views/*"],
+            "@tests/*": ["./src/tests/*"]
+        }
+    },
+    "exclude": ["node_modules"]
+}

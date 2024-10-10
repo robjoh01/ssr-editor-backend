@@ -2,13 +2,13 @@
     "name": "backend",
     "version": "1.0.0",
     "description": "Backend for a starter project for DV1677 JSRamverk",
-    "main": "src/server.mjs",
+    "exports": "./src/server.mjs",
     "type": "module",
     "scripts": {
         "test": "mocha",
         "coverage": "c8 npm run test",
         "lint": "npm run eslint",
-        "start": "node src/server.mjs",
+        "start": "node --loader esm-module-alias/loader --no-warnings src/server.mjs",
         "watch": "nodemon src/server.mjs",
         "clean": "rm -rf node_modules package-lock.json",
         "eslint": "eslint ."
@@ -17,16 +17,25 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "bcryptjs": "^2.4.3",
         "cors": "^2.8.5",
         "dotenv": "^16.4.5",
         "ejs": "^3.1.10",
+        "esm-module-alias": "^2.2.1",
         "express": "^4.21.0",
         "express-file-routing": "^3.0.3",
         "highlight.js": "^11.10.0",
+        "jsonwebtoken": "^9.0.2",
         "marked": "^14.1.2",
         "marked-highlight": "^2.1.4",
         "mongodb": "^6.9.0",
-        "morgan": "^1.10.0"
+        "morgan": "^1.10.0",
+        "node-jq": "^6.0.1",
+        "passport": "^0.7.0",
+        "passport-github2": "^0.1.12",
+        "passport-google-oauth": "^2.0.0",
+        "passport-local": "^1.0.0",
+        "socket.io": "^4.8.0"
     },
     "devDependencies": {
         "@eslint/js": "^9.11.1",
@@ -38,5 +47,11 @@
         "globals": "^15.9.0",
         "mocha": "^10.7.3",
         "sinon": "^19.0.2"
+    },
+    "aliases": {
+        "@": "src",
+        "@utils": "src/utils",
+        "@views": "src/views",
+        "@tests": "src/tests"
     }
 }
