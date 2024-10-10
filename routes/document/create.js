@@ -1,6 +1,6 @@
 "use strict"
 
-import documents from "../../src/documents.js"
+import { createDocument } from "@/collections/documents.js"
 
 // Create a new document
 export const post = async (req, res) => {
@@ -25,12 +25,12 @@ export const post = async (req, res) => {
         }
 
         // Call the create function with the options
-        const result = await documents.create(options)
+        const result = await createDocument(options)
 
         // Check if the document was successfully created
         if (result.acknowledged) {
             // Retrieve the created document using the insertedId
-            const createdDoc = await documents.get(result.insertedId)
+            const createdDoc = await documents.fetch(result.insertedId)
             return res.status(201).json(createdDoc)
         } else {
             return res

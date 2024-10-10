@@ -13,8 +13,8 @@ use(chaiAsPromised)
 import { ObjectId } from "mongodb"
 
 import sinon from "sinon"
-import database from "../database.mjs"
-import documents from "../documents.js"
+import database from "../utils/database.js"
+import documents from "../collections/documents.js"
 
 const sampleData = [
     {
@@ -101,7 +101,7 @@ describe("Documents Service", () => {
 
     it("should retrieve all documents", async () => {
         // Retrieve all documents
-        const result = await documents.getAll()
+        const result = await documents.fetchAll()
 
         // Expect the result to be an array of documents
         expect(result).to.be.an("array").with.lengthOf(2)
@@ -116,7 +116,7 @@ describe("Documents Service", () => {
 
     it("should retrieve a document by ID", async () => {
         // Retrieve the document
-        const result = await documents.get("64d4f734f25b650f3c9e8db0")
+        const result = await documents.fetch("64d4f734f25b650f3c9e8db0")
 
         // Expect the result to be the expected document
         expect(result).to.be.an("object")
@@ -128,7 +128,7 @@ describe("Documents Service", () => {
 
     it("should return an empty object when retrieving a non-existent document", async () => {
         // Expect the get method to be rejected with an Error
-        await expect(documents.get(undefined)).to.be.rejectedWith(
+        await expect(documents.fetch(undefined)).to.be.rejectedWith(
             Error,
             "Missing id"
         )
@@ -182,7 +182,7 @@ describe("Documents Service", () => {
         expect(wasSuccessful).to.be.true
 
         // Retrieve the updated document to verify the changes
-        const result = await documents.get("64d4f734f25b650f3c9e8db0")
+        const result = await documents.fetch("64d4f734f25b650f3c9e8db0")
 
         // Check that the document has been updated with the new properties
         expect(result).to.have.property("title", "Hello World")
