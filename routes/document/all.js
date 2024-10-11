@@ -6,20 +6,17 @@ import { fetchAllDocuments } from "@/collections/documents.js"
  * Retrieve all documents with optional filters and sorting.
  *
  * Query Parameters:
- *  - `ownerId` (optional): Filter by the owner of the document.
+ *  - `userId` (optional): Filter by either the `ownerId` or the `collaboratorId`.
+ *  - `grant` (optional): Comma-separated list of grants (e.g., "read,write"). Filters documents where the specified collaborator has *all* of the listed grants.
  *  - `title` (optional): Search for documents with a title that matches the provided string (case-insensitive).
  *  - `totalViews` (optional): Filter by the total number of views (exact match).
  *  - `activeUsers` (optional): Filter by the number of active users on a document (exact match).
- *  - `collaboratorId` (optional): Filter documents by a specific collaborator's user ID.
- *      - If `collaboratorGrant` is also provided, the documents must include the collaborator with the specified grants.
- *  - `collaboratorGrant` (optional, requires `collaboratorId`): Comma-separated list of grants (e.g., "read,write")
- *      - Filters documents where the specified collaborator has *all* of the listed grants.
  *  - `sort` (optional): Sort the results based on the following options:
  *      - `"lastUpdated"`: Sort by the `updatedAt` field in descending order.
  *      - `"alphabetical"`: Sort by the `title` field in ascending order (alphabetically).
  *
  * Example API call:
- * GET /api/documents?ownerId=123&title=Lorem&collaboratorId=456&collaboratorGrant=read,write&sort=alphabetical
+ * GET /api/documents?userId=123&title=Lorem&collaboratorId=456&collaboratorGrant=read,write&sort=alphabetical
  *
  * @async
  * @param {object} req - The request object, containing optional query parameters.

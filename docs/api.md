@@ -2,7 +2,6 @@
 
 ## Table of Contents
 
-- [Variable Explanations](#variable-explanations)
 - [Document](#document)
     - [Create new document](#create-new-document)
     - [Get all document](#get-all-documents)
@@ -13,20 +12,6 @@
     - [Help](#help)
     - [Reset](#reset)
 
-### Variable Explanations
-
-- **isLocked**: A boolean variable that indicates whether the document is in read-only mode. If `true`, users cannot modify the document; if `false`, the document can be edited.
-
-- **title**: A string representing the title of the document. This is a required field when creating or updating a document.
-
-- **content**: A string that holds the main content of the document. Like the title, this field is also required for document creation and updates.
-
-- **ownerId**: An identifier for the user or entity that owns the document. This can be used for access control and permissions.
-
-- **createdAt**: A timestamp indicating when the document was created. This is typically set automatically when a document is first created.
-
-- **updatedAt**: A timestamp showing the last time the document was updated. This field is usually updated each time the document is modified.
-
 ### Document
 
 #### Create new document
@@ -35,7 +20,7 @@ _Create a new document in the database_
 
 Example URI: `POST` `/api/document/create`
 
-Body:
+**Request Body:**
 
 | Name | Type | Description | Optional |
 | ---- | ---- | ----------- | -------- |
@@ -70,6 +55,17 @@ _Get list of all documents in the database._
 
 Example URI: `GET` `/api/document/all`
 
+**Query Parameters:**
+
+| Name                  | Type      | Description                                                                                                                               | Optional |
+| ----------------------| --------- | ------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| `userId`              | `ObjectId`  | Filter by either the `ownerId` or the `collaboratorId`.                                                                                 | **Yes**  |
+| `grant`               | `string`  | Comma-separated list of grants (e.g., "read,write"). Filters documents where the specified collaborator has *all* of the listed grants.   | **Yes**  |
+| `title`               | `string`  | Search for documents with a title that matches the provided string (case-insensitive).                                                    | **Yes**  |
+| `totalViews`          | `number`  | Filter by the total number of views (exact match).                                                                                        | **Yes**  |
+| `activeUsers`         | `number`  | Filter by the number of active users on a document (exact match).                                                                         | **Yes**  |
+| `sort`                | `string`  | Sort the results based on the following options: `"lastUpdated"`, `"alphabetical"`.                                                       | **Yes**  |
+
 **Responses:**
 
 - **200 OK**: The request was successful, and the list of documents is returned in the response.
@@ -80,23 +76,57 @@ Example URI: `GET` `/api/document/all`
 ```json
 [
     {
-        "id": "66eadff20f6e028247059cdd",
-        "title": "Första dokumentet",
-        "content": "Dokumentets innehåll",
-        "createdAt": "2024-09-25T22:01:06.494Z",
-        "updatedAt": "2024-09-25T22:01:06.494Z",
-        "ownerId": 0,
-        "isLocked": false
+        "_id": "67080abb97c1e14ff70913f0",
+        "title": "Lorem Ipsum",
+        "content": "Dolor sit amet",
+        "collaborators": [
+            {
+                "userId": "66eae0bd0f6e02824705d72a",
+                "createdAt": "9/1/2020, 11:36:33 AM",
+                "updatedAt": "9/1/2020, 11:36:33 AM",
+                "grant": [
+                    "read"
+                ]
+            },
+            {
+                "userId": "67080b1bc1f55178f0902d77",
+                "createdAt": "9/1/2020, 11:36:33 AM",
+                "updatedAt": "9/1/2020, 11:36:33 AM",
+                "grant": [
+                    "read"
+                ]
+            }
+        ],
+        "comments": [
+            "66eae1c30f6e0282470624c7"
+        ],
+        "stats": {
+            "totalEdits": 0,
+            "totalViews": 10,
+            "activeComments": 1,
+            "activeUsers": 2
+        },
+        "createdAt": "9/1/2020, 11:36:33 AM",
+        "updatedAt": "9/1/2020, 11:36:33 AM",
+        "ownerId": "66eae0bd0f6e02824705d72c"
     },
     {
-        "id": "66f489160f6e0282477688bf",
-        "title": "Andra dokumentet",
-        "content": "Dokumentets innehåll",
-        "createdAt": "2024-09-25T22:01:06.494Z",
-        "updatedAt": "2024-09-25T22:01:06.494Z",
-        "ownerId": 1,
-        "isLocked": true
-    }
+        "_id": "67080abb97c1e14ff70913f1",
+        "title": "React.js",
+        "content": "Why use React.js?",
+        "collaborators": [],
+        "comments": [],
+        "stats": {
+            "totalEdits": 0,
+            "totalViews": 5,
+            "activeComments": 0,
+            "activeUsers": 1
+        },
+        "createdAt": "9/1/2020, 11:36:33 AM",
+        "updatedAt": "9/1/2020, 11:36:33 AM",
+        "ownerId": "66eae0bd0f6e02824705d72a"
+    },
+    ...
 ]
 ```
 
@@ -106,7 +136,7 @@ _Get a single document by ID from the database._
 
 Example URI: `GET` `/api/document/:id`
 
-**Parameters:**
+**Request Parameters:**
 
 | Name | Type      | Description             |
 | ---- | --------- | ----------------------- |
@@ -138,20 +168,28 @@ _Update a document in the database_
 
 Example URI: `PUT` `/api/document/:id`
 
-Parameters:
+**Request Parameters:**
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| `id` | `ObjectId` | The ID of the document |
+| Name             | Type       | Description                            | Optional |
+| ---------------- | ---------- | -------------------------------------- | -------- |
+| `id`             | `ObjectId` | The ID of the document                 | **No**   |
 
-Body:
+**Query Parameters:**
 
-| Name | Type | Description | Optional |
-| ---- | ---- | ----------- | -------- |
-| `title` | `text` | The title of the document | **Yes** |
-| `content` | `text` | The content of the document | **Yes** |
-| `ownerId` | `ObjectId` | The ID of the owner | **Yes** |
-| `isLocked` | `boolean` | Whether the document is locked | **Yes** |
+| Name             | Type       | Description                            | Optional |
+| ---------------- | ---------- | -------------------------------------- | -------- |
+| `returnDocument` | `boolean`  | Whether to return the updated document | **Yes**  |
+
+**Request Body:**
+
+| Name           | Type      | Description                              | Optional |
+| -------------- | --------- | ---------------------------------------- | -------- |
+| `title`        | `text`    | The new title of the document            | **Yes**  |
+| `content`      | `text`    | The new content of the document          | **Yes**  |
+| `ownerId`      | `ObjectId` | The ID of the new owner of the document  | **Yes**  |
+| `collaborators`| `Array`   | Updated list of collaborators            | **Yes**  |
+| `comments`     | `Array`   | Updated list of comments                 | **Yes**  |
+| `stats`        | `Object`  | Updated document statistics (totalEdits, totalViews, activeComments, activeUsers) | **Yes**  |
 
 **Responses:**
 
@@ -162,6 +200,32 @@ Body:
 - **500 Internal Server Error**: An unexpected error occurred while trying to update the document.
 
 **Example Response (200 OK):**
+
+- **When `returnDocument` is `true`:**
+
+```json
+{
+    "message": "Document with ID 66f489160f6e0282477688bf was successfully updated.",
+    "document": {
+        "_id": "66f489160f6e0282477688bf",
+        "title": "Updated Title",
+        "content": "Updated content",
+        "ownerId": "66eae0bd0f6e02824705d72c",
+        "collaborators": [],
+        "comments": [],
+        "stats": {
+            "totalEdits": 5,
+            "totalViews": 100,
+            "activeComments": 2,
+            "activeUsers": 3
+        },
+        "createdAt": "2023-01-01T00:00:00.000Z",
+        "updatedAt": "2023-01-02T00:00:00.000Z"
+    }
+}
+```
+
+**When `returnDocument` is `false`:**
 
 ```json
 {
@@ -177,7 +241,7 @@ Example URI: `DELETE` `/api/document/:id`
 
 **Response:** `200`
 
-Parameters:
+**Request Parameters:**
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -218,7 +282,7 @@ _Get help on the API._
 _Reset the database._
 
 - **Example URI**: `POST` `/api/reset`
-- **Description**: This endpoint resets the database by clearing all existing documents and populating it with initial data.
+- **Description**: This endpoint resets the database by clearing all existing documents in each collection and populating it with initial data.
 
 **HTTP Response Codes**:
 - **200 OK**: The database was successfully reset, and a confirmation message is returned.
