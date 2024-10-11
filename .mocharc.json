@@ -1,5 +1,0 @@
-{
-    "spec": "src/tests/**/*.test.js",
-    "exit": false,
-    "timeout": 10000
-}

@@ -1,13 +1,14 @@
 "use strict"
 
 import { getDb, resetCollection } from "@/utils/database.js"
+import { ObjectId } from "mongodb"
 
 const initialUsers = [
     {
-        _id: "66eae0bd0f6e02824705d72a",
+        _id: new ObjectId("66eae0bd0f6e02824705d72a"),
         email: "bYxkM@example.com",
         name: "Robin Johannesson",
-        documents: ["67080abb97c1e14ff70913f0"],
+        documents: [new ObjectId("67080abb97c1e14ff70913f0")],
         stats: {
             totalDocuments: 1,
             totalEdits: 5,
@@ -19,10 +20,10 @@ const initialUsers = [
         profilePicture: "url_to_profile_pic_1",
     },
     {
-        _id: "67080b1bc1f55178f0902d77",
+        _id: new ObjectId("67080b1bc1f55178f0902d77"),
         email: "kZ8hW@example.com",
         name: "Moawya Mearza",
-        documents: ["67080abb97c1e14ff70913f0"],
+        documents: [new ObjectId("67080abb97c1e14ff70913f0")],
         stats: {
             totalDocuments: 1,
             totalEdits: 2,
@@ -34,10 +35,10 @@ const initialUsers = [
         profilePicture: "url_to_profile_pic_2",
     },
     {
-        _id: "66eae0bd0f6e02824705d72b",
+        _id: new ObjectId("66eae0bd0f6e02824705d72b"),
         email: "alice@example.com",
         name: "Alice Andersson",
-        documents: ["67080abb97c1e14ff70913f1"],
+        documents: [new ObjectId("67080abb97c1e14ff70913f1")],
         stats: {
             totalDocuments: 1,
             totalEdits: 3,
@@ -49,7 +50,7 @@ const initialUsers = [
         profilePicture: "url_to_profile_pic_3",
     },
     {
-        _id: "66eae0bd0f6e02824705d72c",
+        _id: new ObjectId("66eae0bd0f6e02824705d72c"),
         email: "bob@example.com",
         name: "Bob Bergström",
         documents: [],
@@ -67,24 +68,24 @@ const initialUsers = [
 
 const initialDocuments = [
     {
-        _id: "67080abb97c1e14ff70913f0",
+        _id: new ObjectId("67080abb97c1e14ff70913f0"),
         title: "Lorem Ipsum",
         content: "Dolor sit amet",
         collaborators: [
             {
-                userId: "66eae0bd0f6e02824705d72a",
+                userId: new ObjectId("66eae0bd0f6e02824705d72a"),
                 createdAt: "9/1/2020, 11:36:33 AM",
                 updatedAt: "9/1/2020, 11:36:33 AM",
                 grant: ["read"],
             },
             {
-                userId: "67080b1bc1f55178f0902d77",
+                userId: new ObjectId("67080b1bc1f55178f0902d77"),
                 createdAt: "9/1/2020, 11:36:33 AM",
                 updatedAt: "9/1/2020, 11:36:33 AM",
                 grant: ["read"],
             },
         ],
-        comments: ["66eae1c30f6e0282470624c7"],
+        comments: [new ObjectId("66eae1c30f6e0282470624c7")],
         stats: {
             totalEdits: 0,
             totalViews: 10,
@@ -93,10 +94,10 @@ const initialDocuments = [
         },
         createdAt: "9/1/2020, 11:36:33 AM",
         updatedAt: "9/1/2020, 11:36:33 AM",
-        ownerId: "66eae0bd0f6e02824705d72c",
+        ownerId: new ObjectId("66eae0bd0f6e02824705d72c"),
     },
     {
-        _id: "67080abb97c1e14ff70913f1",
+        _id: new ObjectId("67080abb97c1e14ff70913f1"),
         title: "React.js",
         content: "Why use React.js?",
         collaborators: [],
@@ -109,16 +110,16 @@ const initialDocuments = [
         },
         createdAt: "9/1/2020, 11:36:33 AM",
         updatedAt: "9/1/2020, 11:36:33 AM",
-        ownerId: "66eae0bd0f6e02824705d72a",
+        ownerId: new ObjectId("66eae0bd0f6e02824705d72a"),
     },
     {
-        _id: "67080abb97c1e14ff70913f2",
+        _id: new ObjectId("67080abb97c1e14ff70913f2"),
         title: "Why use Express.js?",
         content:
             "Express.js is an open-source web framework, built on top of Node.js. The main goal of Express is to provide a simple and flexible framework for building web applications.",
         collaborators: [
             {
-                userId: "66eae0bd0f6e02824705d72a",
+                userId: new ObjectId("66eae0bd0f6e02824705d72a"),
                 createdAt: "9/1/2020, 11:36:33 AM",
                 updatedAt: "9/1/2020, 11:36:33 AM",
                 grant: ["read"],
@@ -133,16 +134,16 @@ const initialDocuments = [
         },
         createdAt: "9/1/2020, 11:36:33 AM",
         updatedAt: "9/1/2020, 11:36:33 AM",
-        ownerId: "67080b1bc1f55178f0902d77",
+        ownerId: new ObjectId("67080b1bc1f55178f0902d77"),
     },
     {
-        _id: "67080abb97c1e14ff70913f3",
+        _id: new ObjectId("67080abb97c1e14ff70913f3"),
         title: "Node.js vs. Deno",
         content:
             "A comparison between Node.js and Deno, exploring the strengths and weaknesses of each.",
         collaborators: [
             {
-                userId: "66eae0bd0f6e02824705d72b",
+                userId: new ObjectId("66eae0bd0f6e02824705d72b"),
                 createdAt: "9/15/2021, 10:15:00 AM",
                 updatedAt: "9/15/2021, 10:15:00 AM",
                 grant: ["read", "write"],
@@ -157,37 +158,37 @@ const initialDocuments = [
         },
         createdAt: "9/15/2021, 10:15:00 AM",
         updatedAt: "9/15/2021, 10:15:00 AM",
-        ownerId: "66eae0bd0f6e02824705d72b",
+        ownerId: new ObjectId("66eae0bd0f6e02824705d72b"),
     },
 ]
 
 const initialComments = [
     {
-        _id: "66eae1c30f6e0282470624c7",
+        _id: new ObjectId("66eae1c30f6e0282470624c7"),
         position: "14:28",
         content: "OK!",
         createdAt: "9/1/2020, 11:36:33 AM",
-        documentId: "67080abb97c1e14ff70913f0",
+        documentId: new ObjectId("67080abb97c1e14ff70913f0"),
         resolved: false,
-        userId: "66eae0bd0f6e02824705d72a",
+        userId: new ObjectId("66eae0bd0f6e02824705d72a"),
     },
     {
-        _id: "66eae1c30f6e0282470624c8",
+        _id: new ObjectId("66eae1c30f6e0282470624c8"),
         position: "2:15",
         content: "Great article!",
         createdAt: "9/1/2020, 11:40:00 AM",
-        documentId: "67080abb97c1e14ff70913f0",
+        documentId: new ObjectId("67080abb97c1e14ff70913f0"),
         resolved: false,
-        userId: "66eae0bd0f6e02824705d72b",
+        userId: new ObjectId("66eae0bd0f6e02824705d72b"),
     },
     {
-        _id: "66eae1c30f6e0282470624c9",
+        _id: new ObjectId("66eae1c30f6e0282470624c9"),
         position: "5:20",
         content: "I disagree with some points.",
         createdAt: "9/1/2021, 10:30:00 AM",
-        documentId: "67080abb97c1e14ff70913f3",
+        documentId: new ObjectId("67080abb97c1e14ff70913f3"),
         resolved: false,
-        userId: "66eae0bd0f6e02824705d72c",
+        userId: new ObjectId("66eae0bd0f6e02824705d72c"),
     },
 ]
 

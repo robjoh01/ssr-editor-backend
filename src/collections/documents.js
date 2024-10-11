@@ -38,6 +38,7 @@ export async function fetchAllDocuments(
  * @param {string} id The id of the document to retrieve.
  *
  * @return {Promise<object>} The document as an object.
+ * @throws {Error} If the document is not found.
  */
 export async function fetchDocument(id) {
     if (!id) throw new Error("Missing id")
@@ -61,28 +62,24 @@ export async function fetchDocument(id) {
  *
  * @async
  *
- * @param {Object} options - The document options.
- * @param {string} options.title - The title of the document.
- * @param {string} options.content - The content of the document.
- * @param {string} options.ownerId - The ID of the owner.
- * @param {boolean} [options.isLocked=false] - Whether the document is locked.
- * @param {Date} [options.createdAt] - The date the document was created (optional).
- * @param {Date} [options.updatedAt] - The date the document was last updated (optional).
+ * @param {string} ownerId - The ID of the owner.
+ * @param {Object} document - The document options.
+ * @param {string} document.title - The title of the document.
+ * @param {string} document.content - The content of the document.
+ * @param {Date} [document.createdAt] - The date the document was created (optional).
  *
  * @return {Promise<object>} - The created document as an object.
+ * @throws {Error} If the owner ID is missing.
+ * @throws {Error} If the document is missing required fields.
  */
-export async function createDocument(options) {
-    // Destructure the options with default values
-    const {
-        title,
-        content,
-        ownerId,
-        isLocked = false,
-        createdAt = new Date(),
-        updatedAt = createdAt,
-    } = options
+export async function createDocument(ownerId, document) {
+    if (!ownerId) {
+        throw new Error("Missing ownerId")
+    }
 
-    if (!title || !content || !ownerId) {
+    const { title, content } = document
+
+    if (!title || !content) {
         throw new Error("Missing required fields")
     }
 
@@ -92,10 +89,17 @@ export async function createDocument(options) {
         return await db.collection("documents").insertOne({
             title,
             content,
-            owner_id: new ObjectId(ownerId),
-            is_locked: isLocked,
-            created_at: createdAt,
-            updated_at: updatedAt,
+            collaborators: [],
+            comments: [],
+            stats: {
+                totalEdits: 0,
+                totalViews: 0,
+                activeComments: 0,
+                activeUsers: 0,
+            },
+            createdAt: new Date(),
+            updatedAt: null,
+            ownerId: new ObjectId(ownerId),
         })
     } catch (err) {
         console.error(err)
@@ -109,27 +113,31 @@ export async function createDocument(options) {
  * Update a document in the database.
  *
  * @async
- *
  * @param {string} id - The id of the document (required).
- * @param {Object} [props] - Optional properties to update.
- * @param {string} [props.title] - The title of the document.
- * @param {string} [props.content] - The content of the document.
- * @param {ObjectId} [props.ownerId] - The owner of the document.
- * @param {boolean} [props.isLocked] - Whether the document is locked.
+ * @param {Object} [document] - Optional properties to update.
+ * @param {string} [document.title] - The title of the document.
+ * @param {string} [document.content] - The content of the document.
+ * @param {ObjectId} [document.ownerId] - The owner of the document.
+ * @param {Array} [document.collaborators] - List of collaborators to update.
+ * @param {Array} [document.comments] - List of comments to update.
+ * @param {Object} [document.stats] - Stats to update (totalEdits, totalViews, activeComments, activeUsers).
  *
  * @return {Promise<void>}
+ * @throws {Error} If the id is missing.
  */
-export async function updateDocument(id, props = {}) {
+export async function updateDocument(id, document = {}) {
     if (!id) throw new Error("Missing id")
 
-    const { title, content, ownerId, isLocked } = props
+    const { title, content, ownerId, collaborators, comments, stats } = document
 
     const updateData = {
         ...(title && { title }),
         ...(content && { content }),
-        ...(ownerId && { owner_id: new ObjectId(ownerId) }),
-        ...(isLocked !== undefined && { is_locked: isLocked }),
-        updated_at: new Date(),
+        ...(ownerId && { ownerId: new ObjectId(ownerId) }),
+        ...(collaborators && { collaborators }),
+        ...(comments && { comments }),
+        ...(stats && { stats }),
+        updatedAt: new Date(),
     }
 
     const { db } = await getDb()
@@ -156,6 +164,7 @@ export async function updateDocument(id, props = {}) {
  * @param {ObjectId} id The id of the document to remove.
  *
  * @return {Promise<DeleteResult>}
+ * @throws {Error} If the id is missing.
  */
 export async function removeDocument(id) {
     if (!id) throw new Error("Missing id")

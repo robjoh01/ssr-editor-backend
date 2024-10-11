@@ -6,6 +6,7 @@
             "@/*": ["./src/*"],
             "@utils/*": ["./src/utils/*"],
             "@views/*": ["./src/views/*"],
+            "@models/*": ["./src/models/*"],
             "@tests/*": ["./src/tests/*"]
         }
     },
