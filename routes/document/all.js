@@ -1,5 +1,6 @@
 "use strict"
 
+import { ObjectId } from "mongodb"
 import { fetchAllDocuments } from "@/collections/documents.js"
 
 /**
@@ -34,7 +35,7 @@ export const get = async (req, res) => {
 
         // Filter for documents owned by the user
         if (userId) {
-            orConditions.push({ ownerId: userId }) // Filter by owner ID
+            orConditions.push({ ownerId: new ObjectId(userId) }) // Filter by owner ID
         }
 
         // Filter for documents that the user has access to, based on grants
@@ -48,7 +49,7 @@ export const get = async (req, res) => {
             orConditions.push({
                 collaborators: {
                     $elemMatch: {
-                        userId: userId,
+                        userId: new ObjectId(userId),
                         grant: { $all: grantArray }, // Use grants to filter
                     },
                 },
