@@ -66,7 +66,6 @@ export async function fetchDocument(id) {
  * @param {Object} document - The document options.
  * @param {string} document.title - The title of the document.
  * @param {string} document.content - The content of the document.
- * @param {Date} [document.createdAt] - The date the document was created (optional).
  *
  * @return {Promise<object>} - The created document as an object.
  * @throws {Error} If the owner ID is missing.

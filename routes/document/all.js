@@ -16,7 +16,7 @@ import { fetchAllDocuments } from "@/collections/documents.js"
  *      - `"alphabetical"`: Sort by the `title` field in ascending order (alphabetically).
  *
  * Example API call:
- * GET /api/documents?userId=123&title=Lorem&collaboratorId=456&collaboratorGrant=read,write&sort=alphabetical
+ * GET /api/document/all?userId=123&title=Lorem&collaboratorId=456&collaboratorGrant=read,write&sort=alphabetical
  *
  * @async
  * @param {object} req - The request object, containing optional query parameters.

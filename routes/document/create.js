@@ -14,7 +14,7 @@ import { createDocument } from "@/collections/documents.js"
  *  - `stats` (optional): Document statistics such as totalEdits, totalViews, activeComments, and activeUsers.
  *
  * Example API call:
- * POST /api/documents
+ * POST /api/document/create
  *
  * Request Body:
  * {
@@ -36,7 +36,6 @@ import { createDocument } from "@/collections/documents.js"
  * @param {object} res - The response object, used to send the result back to the client.
  * @returns {Promise<void>} Sends the created document or an error message back to the client.
  */
-
 export const post = async (req, res) => {
     try {
         const {

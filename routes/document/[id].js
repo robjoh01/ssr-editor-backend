@@ -13,7 +13,7 @@ import {
  *  - `id` (required): The ID of the document to retrieve.
  *
  * Example API call:
- * GET /api/documents/{id}
+ * GET /api/document/:id
  *
  * @async
  * @param {object} req - The request object, containing the document ID in the params.
@@ -53,7 +53,7 @@ export const get = async (req, res) => {
  *  - `returnDocument` (optional): If `true`, the updated document will be returned in the response.
  *
  * Example API call:
- * PUT /api/documents/{id}?returnDocument=true
+ * PUT /api/document/:id?returnDocument=true
  *
  * Request Body:
  * {
@@ -143,7 +143,7 @@ export const put = async (req, res) => {
  *  - `id` (required): The ID of the document to delete.
  *
  * Example API call:
- * DELETE /api/documents/{id}
+ * DELETE /api/documentt/:id
  *
  * @async
  * @param {object} req - The request object, containing the document ID in the params.

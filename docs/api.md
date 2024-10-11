@@ -27,7 +27,9 @@ Example URI: `POST` `/api/document/create`
 | `title` | `text` | The title of the document | **No** |
 | `content` | `text` | The content of the document | **No** |
 | `ownerId` | `ObjectId` | The ID of the owner | **No** |
-| `isLocked` | `boolean` | Whether the document is locked | **Yes** (default: `false`) |
+| `collaborators` | `Array` | List of collaborators | **Yes** |
+| `comments` | `Array` | List of comments | **Yes** |
+| `stats` | `Object` | Document statistics (such as totalEdits, totalViews, activeComments, activeUsers) | **Yes** |
 
 **Responses:**
 
@@ -39,13 +41,39 @@ Example URI: `POST` `/api/document/create`
 
 ```json
 {
-    "id": "66f542827665fb54d5847006",
+    "_id": "67080abb97c1e14ff70913f0",
     "title": "Hello World",
     "content": "Lorem Ipsum",
-    "createdAt": "2024-09-26T11:16:18.883Z",
-    "updatedAt": "2024-09-26T11:16:18.883Z",
-    "ownerId": null,
-    "isLocked": 0
+    "collaborators": [
+        {
+            "userId": "66eae0bd0f6e02824705d72a",
+            "createdAt": "9/1/2020, 11:36:33 AM",
+            "updatedAt": "9/1/2020, 11:36:33 AM",
+            "grant": [
+                "read"
+            ]
+        },
+        {
+            "userId": "67080b1bc1f55178f0902d77",
+            "createdAt": "9/1/2020, 11:36:33 AM",
+            "updatedAt": "9/1/2020, 11:36:33 AM",
+            "grant": [
+                "read"
+            ]
+        }
+    ],
+    "comments": [
+        "66eae1c30f6e0282470624c7"
+    ],
+    "stats": {
+        "totalEdits": 0,
+        "totalViews": 10,
+        "activeComments": 1,
+        "activeUsers": 2
+    },
+    "createdAt": "9/1/2020, 11:36:33 AM",
+    "updatedAt": "2024-10-11T09:00:19.993Z",
+    "ownerId": "66eae0bd0f6e02824705d72c"
 }
 ```
 
@@ -152,13 +180,39 @@ Example URI: `GET` `/api/document/:id`
 
 ```json
 {
-    "id": "66f489160f6e0282477688bf",
-    "title": "Andra dokumentet",
-    "content": "Dokumentets innehåll",
-    "createdAt": "2024-09-25T22:01:06.494Z",
-    "updatedAt": "2024-09-25T22:01:06.494Z",
-    "ownerId": 1,
-    "isLocked": true
+    "_id": "67080abb97c1e14ff70913f0",
+    "title": "Hello World",
+    "content": "Lorem Ipsum",
+    "collaborators": [
+        {
+            "userId": "66eae0bd0f6e02824705d72a",
+            "createdAt": "9/1/2020, 11:36:33 AM",
+            "updatedAt": "9/1/2020, 11:36:33 AM",
+            "grant": [
+                "read"
+            ]
+        },
+        {
+            "userId": "67080b1bc1f55178f0902d77",
+            "createdAt": "9/1/2020, 11:36:33 AM",
+            "updatedAt": "9/1/2020, 11:36:33 AM",
+            "grant": [
+                "read"
+            ]
+        }
+    ],
+    "comments": [
+        "66eae1c30f6e0282470624c7"
+    ],
+    "stats": {
+        "totalEdits": 0,
+        "totalViews": 10,
+        "activeComments": 1,
+        "activeUsers": 2
+    },
+    "createdAt": "9/1/2020, 11:36:33 AM",
+    "updatedAt": "2024-10-11T09:00:19.993Z",
+    "ownerId": "66eae0bd0f6e02824705d72c"
 }
 ```
 
@@ -196,7 +250,7 @@ Example URI: `PUT` `/api/document/:id`
 - **200 OK**: The document was successfully updated.
 - **400 Bad Request**: 
   - Missing ID parameter in the request.
-  - No properties provided for update (title, content, ownerId, or isLocked).
+  - No properties provided for update (title, content, ownerId).
 - **500 Internal Server Error**: An unexpected error occurred while trying to update the document.
 
 **Example Response (200 OK):**
