@@ -21,21 +21,34 @@ SSR-Editor uses **WebSockets** for real-time communication, enabling live collab
 ## Frameworks & Libraries
 
 - [MongoDB](https://www.mongodb.com)
+- [Passport.js](https://www.passportjs.org)
+- [Socket.io](https://socket.io)
 - [Node.js](https://nodejs.org)
-- [NPM](https://www.npmjs.com)
 - [Express](https://expressjs.com)
+- [Jest](https://jestjs.io)
 - [Eslint](https://eslint.org)
-- [Mocha](https://mochajs.org)
-- [Chai](https://www.chaijs.com)
+- [NPM](https://www.npmjs.com)
 
 ## Getting Started
 
 1. Create an `.env` file in the project root with the following content:
    ```bash
-   PORT=8080
-   NODE_ENV="<test|production>"
-   DB_USER="<username>"
-   DB_PASS="<password>"
+   PORT=<your_port> # Server's port
+   DB_USER="<your_username>" # MongoDB's username
+   DB_PASS="<your_password>" # MongoDB's password
+   SALT_ROUNDS=<your_salt_rounds> # For password hashing
+   JWT_SECRET=<your_jwt_secret> # For token signing
+   SAVE_DELAY=<your_save_delay> # In milliseconds (delay between saving changes for a document)
+   ```
+
+   Create a `.env.development` file with the following content:
+   ```bash
+   NODE_ENV="development"
+   ```
+
+   Create a `.env.production` file with the following content:
+   ```bash
+   NODE_ENV="production"
    ```
 
 2. Install the necessary dependencies:
@@ -48,14 +61,7 @@ SSR-Editor uses **WebSockets** for real-time communication, enabling live collab
    npm run start
    ```
 
-## Testing
-
-1. To run unit tests:
+4. Test the application:
    ```bash
    npm run test
-   ```
-
-2. To generate and view the test coverage report:
-   ```bash
-   npm run coverage
    ```

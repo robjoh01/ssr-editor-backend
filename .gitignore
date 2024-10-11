@@ -129,7 +129,14 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-.env
+# env
+*.env
+*.env.example
+*.env.local
+*.env.development
+*.env.production
+*.env.staging
+
 node_modules/
 .dev
 .nyc_output

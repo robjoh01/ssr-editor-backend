@@ -38,8 +38,8 @@ jobs:
                   npm ci
                   npm run build --if-present
 
-            - name: Run Tests and Coverage
-              run: npm run coverage
+            - name: Run Tests
+              run: npm run test
 
             - name: Update Coverage Badge
               # GitHub actions: default branch variable
