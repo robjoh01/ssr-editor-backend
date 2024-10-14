@@ -1,6 +1,6 @@
 "use strict"
 
-import { createDocument } from "@/collections/documents.js"
+import { createDocument } from "@collections/documents.js"
 
 /**
  * Create a new document in the database.

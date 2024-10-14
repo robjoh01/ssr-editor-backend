@@ -1,12 +1,10 @@
-const mockingoose = require("mockingoose")
+// import { ObjectId } from "mongodb"
 
-import { ObjectId } from "mongodb"
-import Comment from "../models/comment.js"
+import request from "supertest"
+import express from "express"
 
 describe("Comment", () => {
-    beforeEach(() => {
-        mockingoose.resetAll()
-    })
+    beforeEach(() => {})
 
     describe("GET /api/comment/all", () => {
         it.todo("Should get all comments")

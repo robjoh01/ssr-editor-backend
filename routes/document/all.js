@@ -1,7 +1,7 @@
 "use strict"
 
 import { ObjectId } from "mongodb"
-import { fetchAllDocuments } from "@/collections/documents.js"
+import { fetchAllDocuments } from "@collections/documents.js"
 
 /**
  * Retrieve all documents with optional filters and sorting.

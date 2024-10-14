@@ -1,19 +1,21 @@
-const mockingoose = require("mockingoose")
+// import { ObjectId } from "mongodb"
 
-import { ObjectId } from "mongodb"
-import User from "../models/user.js"
+import request from "supertest"
+import express from "express"
 
 describe("User", () => {
-    beforeEach(() => {
-        mockingoose.resetAll()
-    })
-
     describe("GET /api/user/all", () => {
-        it.todo("Should get all user")
+        it.todo("Should get all users")
     })
 
     describe("GET /api/user/:id", () => {
         it.todo("Should get a user")
+
+        // const spy = jest.spyOn(User, "find")
+        // spy.mockImplementation(mockUser)
+
+        // expect(spy).toHaveBeenCalled()
+        // spy.mockRestore()
     })
 
     describe("POST /api/user/:id", () => {

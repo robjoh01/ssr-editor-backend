@@ -6,10 +6,11 @@ export function signToken(payload) {
     return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" })
 }
 
-export function verifyToken(token) {
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-        if (err) return false
-
-        return decoded
+export async function verifyToken(token) {
+    return new Promise((resolve) => {
+        jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+            if (err) return resolve(false)
+            resolve(decoded)
+        })
     })
 }
