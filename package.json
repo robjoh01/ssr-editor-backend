@@ -6,7 +6,8 @@
     "type": "module",
     "scripts": {
         "test": "jest",
-        "coverage": "c8 npm run test",
+        "test-silent": "jest --silent",
+        "test:watch": "jest --watch",
         "lint": "npm run eslint",
         "start": "node --loader esm-module-alias/loader --no-warnings src/server.mjs",
         "watch": "nodemon src/server.mjs",
@@ -29,7 +30,6 @@
         "marked": "^14.1.2",
         "marked-highlight": "^2.1.4",
         "mongodb": "^6.9.0",
-        "mongoose": "^8.7.1",
         "morgan": "^1.10.0",
         "node-jq": "^6.0.1",
         "passport": "^0.7.0",
@@ -41,17 +41,21 @@
     "devDependencies": {
         "@babel/preset-env": "^7.25.8",
         "@eslint/js": "^9.11.1",
+        "@shelf/jest-mongodb": "^4.3.2",
         "babel-jest": "^29.7.0",
         "eslint": "^9.11.1",
         "globals": "^15.9.0",
         "jest": "^29.7.0",
-        "mockingoose": "^2.16.2"
+        "mockingoose": "^2.16.2",
+        "supertest": "^7.0.0"
     },
     "aliases": {
         "@": "src",
+        "@routes": "routes",
         "@utils": "src/utils",
         "@views": "src/views",
         "@models": "src/models",
+        "@collections": "src/collections",
         "@tests": "src/tests"
     }
 }

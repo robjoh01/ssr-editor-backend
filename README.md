@@ -31,7 +31,14 @@ SSR-Editor uses **WebSockets** for real-time communication, enabling live collab
 
 ## Getting Started
 
-1. Create an `.env` file in the project root with the following content:
+1. Install the necessary dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Create the following `.env` files in the root of your project:
+
+- **.env**:
    ```bash
    PORT=<your_port> # Server's port
    DB_USER="<your_username>" # MongoDB's username
@@ -39,21 +46,6 @@ SSR-Editor uses **WebSockets** for real-time communication, enabling live collab
    SALT_ROUNDS=<your_salt_rounds> # For password hashing
    JWT_SECRET=<your_jwt_secret> # For token signing
    SAVE_DELAY=<your_save_delay> # In milliseconds (delay between saving changes for a document)
-   ```
-
-   Create a `.env.development` file with the following content:
-   ```bash
-   NODE_ENV="development"
-   ```
-
-   Create a `.env.production` file with the following content:
-   ```bash
-   NODE_ENV="production"
-   ```
-
-2. Install the necessary dependencies:
-   ```bash
-   npm install
    ```
 
 3. Start the application:

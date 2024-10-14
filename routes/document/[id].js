@@ -4,7 +4,7 @@ import {
     fetchDocument,
     updateDocument,
     removeDocument,
-} from "@/collections/documents.js"
+} from "@collections/documents.js"
 
 /**
  * Retrieve a single document from the database by its ID.
@@ -23,11 +23,11 @@ import {
 export const get = async (req, res) => {
     try {
         const id = req.params.id
-
-        if (!id)
-            return res.status(400).send("Bad Request! Missing id parameter.")
-
         const doc = await fetchDocument(id)
+
+        if (!doc)
+            return res.status(404).send(`No document found with ID ${id}.`)
+
         return res.status(200).json(doc)
     } catch (e) {
         console.error(e)
@@ -80,11 +80,6 @@ export const put = async (req, res) => {
         const id = req.params.id
         const { returnDocument } = req.query
 
-        // Validate the document ID
-        if (!id) {
-            return res.status(400).send("Bad Request! Missing document ID.")
-        }
-
         const { title, content, ownerId, collaborators, comments, stats } =
             req.body
 
@@ -126,9 +121,7 @@ export const put = async (req, res) => {
                 message: `Document with ID ${id} was successfully updated.`,
             })
         } else {
-            return res
-                .status(500)
-                .send("Internal Server Error: Document not updated.")
+            return res.status(404).send(`No document found with ID ${id}.`)
         }
     } catch (e) {
         console.error(e)
@@ -153,9 +146,6 @@ export const put = async (req, res) => {
 export const del = async (req, res) => {
     try {
         const id = req.params.id
-
-        if (!id)
-            return res.status(400).send("Bad Request! Missing id parameter.")
 
         const result = await removeDocument(id)
 

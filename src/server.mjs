@@ -60,10 +60,6 @@ app.use(cors())
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views")) // Set views directory
 
-if (process.env.NODE_ENV !== "test") {
-    app.use(morgan("combined")) // Log HTTP requests
-}
-
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
