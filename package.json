@@ -54,7 +54,7 @@
         "@routes": "routes",
         "@utils": "src/utils",
         "@views": "src/views",
-        "@models": "src/models",
+        "@middlewares": "src/middlewares",
         "@collections": "src/collections",
         "@tests": "src/tests"
     }
