@@ -16,6 +16,8 @@ const __dirname = dirname(__filename)
 
 import "dotenv/config"
 import "./utils/database.js"
+
+import passport from "@utils/passport.js"
 import { router } from "express-file-routing"
 
 // Express app
@@ -62,6 +64,8 @@ app.set("views", path.join(__dirname, "views")) // Set views directory
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+
+app.use(passport.initialize())
 
 // API routes
 app.use("/api/", await router())

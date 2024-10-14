@@ -16,7 +16,8 @@ const initialUsers = [
         },
         createdAt: "9/1/2020, 11:36:33 AM",
         lastLogin: "9/1/2020, 11:36:33 AM",
-        passwordHash: "hashedPassword1",
+        passwordHash:
+            "$2a$12$.TFOYazokOS6p6Ijm/ud5.RbT7xqGwb1PfkKWOrG4b/kuD9rxkr.a",
         profilePicture: "url_to_profile_pic_1",
     },
     {
@@ -31,7 +32,8 @@ const initialUsers = [
         },
         createdAt: "9/1/2020, 11:36:33 AM",
         lastLogin: "9/1/2020, 11:36:33 AM",
-        passwordHash: "hashedPassword2",
+        passwordHash:
+            "$2a$12$fI7ELlrodWaUIo2aLAbV6.E01w2zLwaNnhj/mDgJupXoV/nWoj2K6",
         profilePicture: "url_to_profile_pic_2",
     },
     {
@@ -46,7 +48,8 @@ const initialUsers = [
         },
         createdAt: "9/1/2021, 10:15:00 AM",
         lastLogin: "9/15/2021, 2:30:00 PM",
-        passwordHash: "hashedPassword3",
+        passwordHash:
+            "$2a$12$N.5uCXsE1nelgBNfNXWiGu7PNxprgjp5Xb4vbRBstr8N260yHa.8e",
         profilePicture: "url_to_profile_pic_3",
     },
     {
@@ -61,7 +64,8 @@ const initialUsers = [
         },
         createdAt: "9/1/2022, 11:00:00 AM",
         lastLogin: "9/1/2023, 11:00:00 AM",
-        passwordHash: "hashedPassword4",
+        passwordHash:
+            "$2a$12$LwT1aoWeL1bT0lAHUBGlkuN67BddII2rp2Dt6Zs4EoMsXSTRmE8ta",
         profilePicture: "url_to_profile_pic_4",
     },
 ]
