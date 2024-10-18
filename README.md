@@ -60,8 +60,8 @@ SSR-Editor uses **WebSockets** for real-time communication, enabling live collab
    GOOGLE_CLIENT_SECRET=<your_client_secret> # Google's client secret
 
    # Database
-   DB_USER="<your_username>" # MongoDB's username
-   DB_PASS="<your_password>" # MongoDB's password
+   DB_USER=<your_username> # MongoDB's username
+   DB_PASS=<your_password> # MongoDB's password
    ```
 
 3. Start the application:
