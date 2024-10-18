@@ -1,17 +1,7 @@
 import { getDb } from "@utils/database.js"
 import { ObjectId } from "mongodb"
 
-// TODO: Update user's lastLogin property
-export async function updateUserLastLogin(userId) {
-    const updatedUser = await User.findByIdAndUpdate(
-        userId,
-        {
-            lastLogin: new Date(),
-        },
-        { new: true }
-    )
-    return updatedUser
-}
+import { hashPassword } from "@utils/crypt.js"
 
 /**
  * Retrieve users from the database with optional filters and sorting.
@@ -55,6 +45,9 @@ export async function fetchAllUsers(
 export async function fetchUser(id) {
     if (!id) throw new Error("Missing id")
 
+    if (!ObjectId.isValid(id))
+        throw new Error("Invalid id. Must be a valid ObjectId.")
+
     const { db } = await getDb()
 
     try {
@@ -90,8 +83,134 @@ export async function fetchUserByEmail(email) {
     }
 }
 
-export async function createUser(user) {}
+/**
+ * Create a new user in the database.
+ *
+ * @async
+ *
+ * @param {Object} user - The user.
+ * @param {string} user.name - The name of the user.
+ * @param {string} user.email - The email of the user.
+ * @param {string} user.password - The password of the user.
+ *
+ * @return {Promise<object>} - The created user as an object.
+ * @throws {Error} If the user could not be created.
+ */
+export async function createUser(user) {
+    const { db } = await getDb()
 
-export async function updateUser(id, user) {}
+    try {
+        return await db.collection("users").insertOne(user)
+    } catch (err) {
+        console.error(err)
+        return {}
+    } finally {
+        await db.client.close()
+    }
+}
 
-export async function removeUser(id) {}
+/**
+ * Update a user in the database.
+ *
+ * @async
+ * @param {string} id - The id of the user (required).
+ * @param {Object} [user] - Optional properties to update.
+ *
+ * @return {Promise<void>}
+ * @throws {Error} If the user could not be updated.
+ */
+export async function updateUser(id, user) {
+    if (!id) throw new Error("Missing id")
+
+    if (!ObjectId.isValid(id))
+        throw new Error("Invalid id. Must be a valid ObjectId.")
+
+    const { name, email, password, documents, stats, profilePicture } = user
+
+    const updateData = {
+        ...(name && { name }),
+        ...(email && { email }),
+        ...(password && { passwordHash: await hashPassword(password) }),
+        ...(documents && { documents }),
+        ...(stats && { stats }),
+        ...(profilePicture && { profilePicture }),
+        updatedAt: new Date(),
+    }
+
+    const { db } = await getDb()
+
+    try {
+        await db
+            .collection("users")
+            .updateOne({ _id: new ObjectId(id) }, { $set: updateData })
+
+        return true
+    } catch (err) {
+        console.error(err)
+        return false
+    } finally {
+        await db.client.close()
+    }
+}
+
+/**
+ * Update the user's last login time.
+ *
+ * @async
+ * @param {string} id - The id of the user (required).
+ * @return {Promise<boolean>} - Returns true if the update was successful, otherwise false.
+ * @throws {Error} If the user could not be updated.
+ */
+export async function updateUserLastLogin(id) {
+    if (!id) throw new Error("Missing id")
+
+    if (!ObjectId.isValid(id))
+        throw new Error("Invalid id. Must be a valid ObjectId.")
+
+    const updateData = {
+        lastLogin: new Date(),
+    }
+
+    const { db } = await getDb()
+
+    try {
+        await db
+            .collection("users")
+            .updateOne({ _id: new ObjectId(id) }, { $set: updateData })
+
+        return true
+    } catch (err) {
+        console.error(err)
+        return false
+    } finally {
+        await db.client.close()
+    }
+}
+
+/**
+ * Remove a user.
+ *
+ * @async
+ *
+ * @param {ObjectId} id The id of the user to remove.
+ *
+ * @return {Promise<DeleteResult>}
+ * @throws {Error} If the user could not be removed.
+ */
+export async function removeUser(id) {
+    if (!id) throw new Error("Missing id")
+
+    if (!ObjectId.isValid(id))
+        throw new Error("Invalid id. Must be a valid ObjectId.")
+
+    const { db } = await getDb()
+
+    try {
+        return await db.collection("users").deleteOne({ _id: new ObjectId(id) })
+    } catch (err) {
+        console.error(err)
+        return undefined
+    } finally {
+        await db.client.close()
+    }
+}

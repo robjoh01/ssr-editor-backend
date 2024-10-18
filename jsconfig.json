@@ -7,7 +7,7 @@
             "@utils/*": ["./src/utils/*"],
             "@views/*": ["./src/views/*"],
             "@middlewares/*": ["./src/middlewares/*"],
-            "@routes/*": ["./routes/*"],
+            "@routes/*": ["src/routes/*"],
             "@collections/*": ["./src/collections/*"],
             "@tests/*": ["./src/tests/*"]
         }

@@ -7,4 +7,6 @@ docs/
 
 .gitignore
 .prettierrc
+
+docs/api.md
 README.md

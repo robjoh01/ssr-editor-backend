@@ -7,13 +7,13 @@ module.exports = {
     moduleNameMapper: {
         "^@utils/(.*)$": "<rootDir>/src/utils/$1",
         "^@collections/(.*)$": "<rootDir>/src/collections/$1",
-        "^@routes/(.*)$": "<rootDir>/routes/$1",
+        "^@routes/(.*)$": "<rootDir>/src/routes/$1",
     },
     collectCoverage: true,
     coverageReporters: ["html", "text", "clover", "json-summary"],
     coverageDirectory: "coverage",
     collectCoverageFrom: [
-        "routes/**/*.js",
+        "src/routes/**/*.js",
         "src/utils/**/*.js",
         "!**/index.js",
         "!src/utils/strategies/*.js",
