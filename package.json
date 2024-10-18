@@ -2,15 +2,15 @@
     "name": "backend",
     "version": "1.0.0",
     "description": "Backend for a starter project for DV1677 JSRamverk",
-    "exports": "./src/server.mjs",
+    "exports": "./src/server.js",
     "type": "module",
     "scripts": {
         "test": "jest",
         "test-silent": "jest --silent",
         "test:watch": "jest --watch",
-        "lint": "npm run eslint",
-        "start": "node --loader esm-module-alias/loader --no-warnings src/server.mjs",
-        "watch": "nodemon src/server.mjs",
+        "lint": "npx eslint .",
+        "start": "node --loader esm-module-alias/loader --no-warnings src/server.js",
+        "watch": "nodemon src/server.js",
         "clean": "rm -rf node_modules package-lock.json",
         "eslint": "eslint ."
     },
@@ -19,6 +19,7 @@
     "license": "ISC",
     "dependencies": {
         "bcryptjs": "^2.4.3",
+        "cookie-parser": "^1.4.7",
         "cors": "^2.8.5",
         "dotenv": "^16.4.5",
         "ejs": "^3.1.10",
@@ -36,7 +37,8 @@
         "passport-github2": "^0.1.12",
         "passport-google-oauth": "^2.0.0",
         "passport-local": "^1.0.0",
-        "socket.io": "^4.8.0"
+        "socket.io": "^4.8.0",
+        "validator": "^13.12.0"
     },
     "devDependencies": {
         "@babel/preset-env": "^7.25.8",
@@ -51,11 +53,18 @@
     },
     "aliases": {
         "@": "src",
-        "@routes": "routes",
+        "@routes": "src/routes",
         "@utils": "src/utils",
         "@views": "src/views",
         "@middlewares": "src/middlewares",
         "@collections": "src/collections",
         "@tests": "src/tests"
+    },
+    "jest": {
+        "coverageReporters": [
+            "json",
+            "json-summary",
+            "html"
+        ]
     }
 }

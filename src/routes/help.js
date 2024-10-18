@@ -22,7 +22,17 @@ const marked = new Marked(
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-// Help route
+/**
+ * Get the help documentation.
+ *
+ * Example API call:
+ * POST /api/help
+ *
+ * @async
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {Promise<void>} Sends the help documentation as a HTML response.
+ */
 export const get = (req, res) => {
     if (req.method !== "GET") return res.status(405).send("Method Not Allowed")
 

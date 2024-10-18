@@ -43,6 +43,9 @@ export async function fetchAllDocuments(
 export async function fetchDocument(id) {
     if (!id) throw new Error("Missing id")
 
+    if (!ObjectId.isValid(id))
+        throw new Error("Invalid id. Must be a valid ObjectId.")
+
     const { db } = await getDb()
 
     try {
@@ -63,43 +66,15 @@ export async function fetchDocument(id) {
  * @async
  *
  * @param {string} ownerId - The ID of the owner.
- * @param {Object} document - The document options.
- * @param {string} document.title - The title of the document.
- * @param {string} document.content - The content of the document.
- *
+ * @param {Object} document - The document.
  * @return {Promise<object>} - The created document as an object.
- * @throws {Error} If the owner ID is missing.
- * @throws {Error} If the document is missing required fields.
+ * @throws {Error} If the document could not be created.
  */
-export async function createDocument(ownerId, document) {
-    if (!ownerId) {
-        throw new Error("Missing ownerId")
-    }
-
-    const { title, content } = document
-
-    if (!title || !content) {
-        throw new Error("Missing required fields")
-    }
-
+export async function createDocument(document) {
     const { db } = await getDb()
 
     try {
-        return await db.collection("documents").insertOne({
-            title,
-            content,
-            collaborators: [],
-            comments: [],
-            stats: {
-                totalEdits: 0,
-                totalViews: 0,
-                activeComments: 0,
-                activeUsers: 0,
-            },
-            createdAt: new Date(),
-            updatedAt: null,
-            ownerId: new ObjectId(ownerId),
-        })
+        return await db.collection("documents").insertOne(document)
     } catch (err) {
         console.error(err)
         return {}
@@ -122,10 +97,13 @@ export async function createDocument(ownerId, document) {
  * @param {Object} [document.stats] - Stats to update (totalEdits, totalViews, activeComments, activeUsers).
  *
  * @return {Promise<void>}
- * @throws {Error} If the id is missing.
+ * @throws {Error} If the document could not be updated.
  */
 export async function updateDocument(id, document = {}) {
     if (!id) throw new Error("Missing id")
+
+    if (!ObjectId.isValid(id))
+        throw new Error("Invalid id. Must be a valid ObjectId.")
 
     const { title, content, ownerId, collaborators, comments, stats } = document
 
@@ -163,10 +141,13 @@ export async function updateDocument(id, document = {}) {
  * @param {ObjectId} id The id of the document to remove.
  *
  * @return {Promise<DeleteResult>}
- * @throws {Error} If the id is missing.
+ * @throws {Error} If the document could not be removed.
  */
 export async function removeDocument(id) {
     if (!id) throw new Error("Missing id")
+
+    if (!ObjectId.isValid(id))
+        throw new Error("Invalid id. Must be a valid ObjectId.")
 
     const { db } = await getDb()
 

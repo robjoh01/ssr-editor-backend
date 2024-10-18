@@ -8,13 +8,13 @@ import {
     removeDocument,
 } from "@collections/documents.js"
 
-import { get as allRoute } from "@routes/document/all.js"
+import { get as allRoute } from "@/routes/documents/all.js"
 import {
     get as getRoute,
     put as updateRoute,
     del as removeRoute,
-} from "@routes/document/[id].js"
-import { post as createRoute } from "@routes/document/create.js"
+} from "@/routes/documents/[id].js"
+import { post as createRoute } from "@/routes/documents/create.js"
 
 // Mock the implementation of fetchAllDocuments
 jest.mock("@collections/documents.js", () => ({

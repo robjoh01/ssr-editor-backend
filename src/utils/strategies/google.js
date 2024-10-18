@@ -6,11 +6,10 @@ const GoogleStrategy = new Strategy(
     {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "https://www.example.com/oauth2/redirect/google",
-        scope: ["profile"],
-        state: true,
+        callbackURL: "/api/auth/google/callback",
     },
     function verify(accessToken, refreshToken, profile, done) {
+        // TODO: Find or create user via email
         console.log(profile)
         done(null, profile)
     }

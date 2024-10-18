@@ -8,6 +8,22 @@
     - [Get document by ID](#get-document-by-id)
     - [Update document](#update-document)
     - [Delete document](#delete-document)
+- [User](#user)
+    - [Create new user](#create-new-user)
+    - [Get all users](#get-all-users)
+    - [Get user by ID](#get-user-by-id)
+    - [Update user](#update-user)
+    - [Delete user](#delete-user)
+- [Comment](#comment)
+    - [Create new comment](#create-new-comment)
+    - [Get all comments](#get-all-comments)
+    - [Get comment by ID](#get-comment-by-id)
+    - [Update comment](#update-comment)
+    - [Delete comment](#delete-comment)
+- [Auth](#auth)
+    - [Login](#login)
+    - [Refresh](#refresh)
+    - [Status](#status)
 - [Endpoints](#endpoints)
     - [Help](#help)
     - [Reset](#reset)
@@ -20,13 +36,18 @@ _Create a new document in the database_
 
 Example URI: `POST` `/api/document/create`
 
+**Request Headers:**
+
+| Name | Type | Description | Optional |
+| ---- | ---- | ----------- | -------- |
+| `token` | `text` | The token of the user | **No** |
+
 **Request Body:**
 
 | Name | Type | Description | Optional |
 | ---- | ---- | ----------- | -------- |
 | `title` | `text` | The title of the document | **No** |
 | `content` | `text` | The content of the document | **No** |
-| `ownerId` | `ObjectId` | The ID of the owner | **No** |
 | `collaborators` | `Array` | List of collaborators | **Yes** |
 | `comments` | `Array` | List of comments | **Yes** |
 | `stats` | `Object` | Document statistics (such as totalEdits, totalViews, activeComments, activeUsers) | **Yes** |
@@ -222,6 +243,12 @@ _Update a document in the database_
 
 Example URI: `PUT` `/api/document/:id`
 
+**Request Headers:**
+
+| Name | Type | Description | Optional |
+| ---- | ---- | ----------- | -------- |
+| `token` | `text` | The token of the user | **No** |
+
 **Request Parameters:**
 
 | Name             | Type       | Description                            | Optional |
@@ -240,7 +267,6 @@ Example URI: `PUT` `/api/document/:id`
 | -------------- | --------- | ---------------------------------------- | -------- |
 | `title`        | `text`    | The new title of the document            | **Yes**  |
 | `content`      | `text`    | The new content of the document          | **Yes**  |
-| `ownerId`      | `ObjectId` | The ID of the new owner of the document  | **Yes**  |
 | `collaborators`| `Array`   | Updated list of collaborators            | **Yes**  |
 | `comments`     | `Array`   | Updated list of comments                 | **Yes**  |
 | `stats`        | `Object`  | Updated document statistics (totalEdits, totalViews, activeComments, activeUsers) | **Yes**  |
@@ -293,7 +319,11 @@ _Delete a document from the database_
 
 Example URI: `DELETE` `/api/document/:id`
 
-**Response:** `200`
+**Request Headers:**
+
+| Name | Type | Description | Optional |
+| ---- | ---- | ----------- | -------- |
+| `token` | `text` | The token of the user | **No** |
 
 **Request Parameters:**
 
@@ -315,6 +345,131 @@ Example URI: `DELETE` `/api/document/:id`
 ```json
 {
     "message": "Document with ID 66f489160f6e0282477688bf was successfully deleted."
+}
+```
+
+### User
+
+#### Create new user
+
+#### Get all users
+
+#### Get user
+
+#### Update user
+
+#### Delete user
+
+### Comment
+
+#### Create new comment
+
+#### Get all comments
+
+#### Get comment
+
+#### Update comment
+
+#### Delete comment
+
+### Auth
+
+#### Login
+
+_Generate access and refresh tokens for a user_
+
+Example URI: `POST` `/api/auth/login`
+
+**Request Body:**
+
+| Name | Type | Description | Optional |
+| ---- | ---- | ----------- | -------- |
+| `email` | `text` | The email of the user | **No** |
+| `password` | `text` | The password of the user | **No** |
+| `method` | `local`, `github` or `google` | The authentication method to use | **Yes** |
+
+**Responses:**
+
+- **201 Created**: The document was successfully created, and the created document is returned in the response.
+- **400 Bad Request**: Missing required parameters (title or content) in the request.
+- **500 Internal Server Error**: An unexpected error occurred while trying to create the document.
+
+**Example Response (200 OK):**
+
+```json
+{
+    "token": "XXX",
+    "user": {
+        "_id": "66eae0bd0f6e02824705d72a",
+        "email": "bYxkM@example.com",
+        "name": "Robin Johannesson",
+        "documents": [
+            "67080abb97c1e14ff70913f0"
+        ],
+        "stats": {
+            "totalDocuments": 1,
+            "totalEdits": 5,
+            "totalComments": 1
+        },
+        "createdAt": "9/1/2020, 11:36:33 AM",
+        "lastLogin": "9/1/2020, 11:36:33 AM",
+        "profilePicture": "url_to_profile_pic_1"
+    }
+}
+```
+
+#### Refresh
+
+_Generate new refresh tokens for a user_
+
+Example URI: `POST` `/api/auth/refresh`
+
+**Request Headers:**
+
+| Name | Type | Description | Optional |
+| ---- | ---- | ----------- | -------- |
+| `token` | `text` | The access token of the user | **No** |
+
+**Responses:**
+
+- **201 Created**: The document was successfully created, and the created document is returned in the response.
+- **400 Bad Request**: Missing required parameters (title or content) in the request.
+- **500 Internal Server Error**: An unexpected error occurred while trying to create the document.
+
+**Example Response (200 OK):**
+
+```json
+{
+    "accessToken": "XXX"
+}
+```
+
+#### Status
+
+_Get the status of the user_
+
+Example URI: `POST` `/api/auth/status`
+
+**Request Headers:**
+
+| Name | Type | Description | Optional |
+| ---- | ---- | ----------- | -------- |
+| `token` | `text` | The access token of the user | **No** |
+
+**Responses:**
+
+- **201 Created**: The document was successfully created, and the created document is returned in the response.
+- **400 Bad Request**: Missing required parameters (title or content) in the request.
+- **500 Internal Server Error**: An unexpected error occurred while trying to create the document.
+
+**Example Response (200 OK):**
+
+```json
+{
+    "id": "66eae0bd0f6e02824705d72a",
+    "email": "bYxkM@example.com",
+    "iat": 1728981946,
+    "exp": 1728982846
 }
 ```
 

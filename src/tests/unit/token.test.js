@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-import { signToken, verifyToken } from "@utils/token"
+import { signToken, verifyRefreshToken } from "@utils/token"
 
 // Mock the jwt methods
 jest.mock("jsonwebtoken", () => ({
@@ -39,7 +39,7 @@ describe("Token", () => {
             callback(null, decoded) // Simulate successful verification
         })
 
-        const result = await verifyToken(token) // Await the result
+        const result = await verifyRefreshToken(token) // Await the result
 
         expect(jwt.verify).toHaveBeenCalledWith(
             token,
@@ -54,7 +54,7 @@ describe("Token", () => {
             callback(new Error("Invalid token"), null) // Simulate failed verification
         })
 
-        const result = await verifyToken(token) // Await the result
+        const result = await verifyRefreshToken(token) // Await the result
 
         expect(jwt.verify).toHaveBeenCalledWith(
             token,

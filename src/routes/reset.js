@@ -1,11 +1,14 @@
 "use strict"
 
-import { getDb, resetCollection } from "@/utils/database.js"
 import { ObjectId } from "mongodb"
+import { getDb, resetCollection } from "@/utils/database.js"
+import adminJWT from "@middlewares/adminJWT.js"
 
+/* eslint-disable */
 const initialUsers = [
     {
         _id: new ObjectId("66eae0bd0f6e02824705d72a"),
+        isAdmin: true,
         email: "bYxkM@example.com",
         name: "Robin Johannesson",
         documents: [new ObjectId("67080abb97c1e14ff70913f0")],
@@ -15,6 +18,7 @@ const initialUsers = [
             totalComments: 1,
         },
         createdAt: "9/1/2020, 11:36:33 AM",
+        updatedAt: "9/1/2020, 11:36:33 AM",
         lastLogin: "9/1/2020, 11:36:33 AM",
         passwordHash:
             "$2a$12$.TFOYazokOS6p6Ijm/ud5.RbT7xqGwb1PfkKWOrG4b/kuD9rxkr.a",
@@ -22,6 +26,7 @@ const initialUsers = [
     },
     {
         _id: new ObjectId("67080b1bc1f55178f0902d77"),
+        isAdmin: true,
         email: "kZ8hW@example.com",
         name: "Moawya Mearza",
         documents: [new ObjectId("67080abb97c1e14ff70913f0")],
@@ -31,6 +36,7 @@ const initialUsers = [
             totalComments: 0,
         },
         createdAt: "9/1/2020, 11:36:33 AM",
+        updatedAt: "9/1/2020, 11:36:33 AM",
         lastLogin: "9/1/2020, 11:36:33 AM",
         passwordHash:
             "$2a$12$fI7ELlrodWaUIo2aLAbV6.E01w2zLwaNnhj/mDgJupXoV/nWoj2K6",
@@ -38,6 +44,7 @@ const initialUsers = [
     },
     {
         _id: new ObjectId("66eae0bd0f6e02824705d72b"),
+        isAdmin: false,
         email: "alice@example.com",
         name: "Alice Andersson",
         documents: [new ObjectId("67080abb97c1e14ff70913f1")],
@@ -47,6 +54,7 @@ const initialUsers = [
             totalComments: 2,
         },
         createdAt: "9/1/2021, 10:15:00 AM",
+        updatedAt: "9/1/2020, 11:36:33 AM",
         lastLogin: "9/15/2021, 2:30:00 PM",
         passwordHash:
             "$2a$12$N.5uCXsE1nelgBNfNXWiGu7PNxprgjp5Xb4vbRBstr8N260yHa.8e",
@@ -54,6 +62,7 @@ const initialUsers = [
     },
     {
         _id: new ObjectId("66eae0bd0f6e02824705d72c"),
+        isAdmin: false,
         email: "bob@example.com",
         name: "Bob Bergström",
         documents: [],
@@ -63,6 +72,7 @@ const initialUsers = [
             totalComments: 0,
         },
         createdAt: "9/1/2022, 11:00:00 AM",
+        updatedAt: "9/1/2020, 11:36:33 AM",
         lastLogin: "9/1/2023, 11:00:00 AM",
         passwordHash:
             "$2a$12$LwT1aoWeL1bT0lAHUBGlkuN67BddII2rp2Dt6Zs4EoMsXSTRmE8ta",
@@ -73,8 +83,62 @@ const initialUsers = [
 const initialDocuments = [
     {
         _id: new ObjectId("67080abb97c1e14ff70913f0"),
-        title: "Lorem Ipsum",
-        content: "Dolor sit amet",
+        title: "DV1677 - JavaScript-baserade webbramverk",
+        content: {
+            ops: [
+                {
+                    insert: "Detta är kursen DV1677 JavaScript-baserade webbramverk.",
+                },
+                {
+                    attributes: {
+                        header: 1,
+                    },
+                    insert: "\n",
+                },
+                {
+                    insert: "\nVi ska i denna kurs använda oss av JavaScript ramverk både på frontend och backend för att vidareutveckla en befintlig applikation.\nKursen ges till ",
+                },
+                {
+                    attributes: {
+                        color: "#2915a3",
+                        link: "https://dbwebb.se/",
+                    },
+                    insert: "webbprogrammeringsstudenter",
+                },
+                {
+                    insert: " vid ",
+                },
+                {
+                    attributes: {
+                        color: "#2915a3",
+                        link: "https://bth.se/",
+                    },
+                    insert: "Blekinge Tekniska Högskola",
+                },
+                {
+                    insert: ". Och är en av Sveriges enda högskolekurser i JavaScript ramverk.\n\nKällkoden till denna webbplats finns på ",
+                },
+                {
+                    attributes: {
+                        color: "#2915a3",
+                        link: "https://github.com/emilfolino/jsramverk.se",
+                    },
+                    insert: "GitHub emilfolino/jsramverk.se",
+                },
+                {
+                    insert: "\n\nI kursen bygger vi vidare på en ",
+                },
+                {
+                    attributes: {
+                        italic: true,
+                    },
+                    insert: '"real-time collaborative text-editor"',
+                },
+                {
+                    insert: "-applikation tillsammans två och två. Vi tar en titt på hur detta samarbetet kan bli optimalt och vilka tekniker och verktyg som finns för att samarbeta om vidareutveckling av kod.\n\n\n",
+                },
+            ],
+        },
         collaborators: [
             {
                 userId: new ObjectId("66eae0bd0f6e02824705d72a"),
@@ -196,18 +260,36 @@ const initialComments = [
     },
 ]
 
-// Reset all collections
-export const post = async (req, res) => {
-    try {
-        const { db } = await getDb()
+/* eslint-enable */
 
-        await resetCollection(db, "documents", initialDocuments)
-        await resetCollection(db, "users", initialUsers)
-        await resetCollection(db, "comments", initialComments)
+/**
+ * Reset the database.
+ *
+ * Request Headers:
+ *  - `accessToken` (required): The access token of the user.
+ *
+ * Example API call:
+ * POST /api/reset
+ *
+ * @async
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {Promise<void>} Sends a success message if the user was created, or an error message if not.
+ */
+export const post = [
+    adminJWT(),
+    async (req, res) => {
+        try {
+            const { db } = await getDb()
 
-        return res.status(200).send("All collections were reset.")
-    } catch (e) {
-        console.error(e)
-        return res.status(500).send("Internal Server Error")
-    }
-}
+            await resetCollection(db, "documents", initialDocuments)
+            await resetCollection(db, "users", initialUsers)
+            await resetCollection(db, "comments", initialComments)
+
+            return res.status(200).send("All collections were reset.")
+        } catch (e) {
+            console.error(e)
+            return res.status(500).send("Internal Server Error")
+        }
+    },
+]

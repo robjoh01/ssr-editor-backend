@@ -40,12 +40,28 @@ SSR-Editor uses **WebSockets** for real-time communication, enabling live collab
 
 - **.env**:
    ```bash
+   # App
    PORT=<your_port> # Server's port
+   SAVE_DELAY=<your_save_delay> # In milliseconds (delay between saving changes for a document)
+
+   # bcrypt
+   SALT_ROUNDS=<your_salt_rounds> # For password hashing
+
+   # JWT Token
+   JWT_SECRET=<your_jwt_secret> # For signing access tokens
+   JWT_REFRESH_SECRET=<your_jwt_refresh_secret> # For signing refresh tokens
+
+   # Github Auth
+   GITHUB_CLIENT_ID=<your_client_id> # GitHub's client ID
+   GITHUB_CLIENT_SECRET=<your_client_secret> # GitHub's client secret>
+
+   # Google Auth
+   GOOGLE_CLIENT_ID=<your_client_id> # Google's client ID
+   GOOGLE_CLIENT_SECRET=<your_client_secret> # Google's client secret
+
+   # Database
    DB_USER="<your_username>" # MongoDB's username
    DB_PASS="<your_password>" # MongoDB's password
-   SALT_ROUNDS=<your_salt_rounds> # For password hashing
-   JWT_SECRET=<your_jwt_secret> # For token signing
-   SAVE_DELAY=<your_save_delay> # In milliseconds (delay between saving changes for a document)
    ```
 
 3. Start the application:
