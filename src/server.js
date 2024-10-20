@@ -13,6 +13,12 @@ import passport from "@utils/passport.js"
 
 import express from "express"
 import { router } from "express-file-routing"
+
+import { graphqlHTTP } from "express-graphql"
+import { makeExecutableSchema } from "@graphql-tools/schema"
+import graphqlTypeDefs from "@/utils/graphql/typeDefs.js"
+import graphqlResolvers from "@utils/graphql/resolvers.js"
+
 import { createServer } from "node:http"
 import initSocket from "./socket.js"
 
@@ -33,7 +39,7 @@ app.disable("x-powered-by")
 
 app.use(
     cors({
-        origin: ["http://localhost:5000", "http://localhost:3000"], // Your frontend URL
+        origin: ["http://localhost:5000", "http://localhost:3000"],
         credentials: true, // Allow credentials (cookies, etc.)
     })
 )
@@ -45,16 +51,30 @@ app.use(cookieParser())
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views")) // Set views directory
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
-
 app.use(passport.initialize())
 
 // API routes
 app.use(
     "/api/",
+    bodyParser.json(),
+    bodyParser.urlencoded({ extended: true }),
     await router({
         directory: path.join(__dirname, "routes"),
+    })
+)
+
+import authenticateJWT from "@middlewares/authenticateJWT.js"
+
+// Define the GraphQL endpoint
+app.use(
+    "/api/graphql",
+    authenticateJWT(),
+    graphqlHTTP({
+        schema: makeExecutableSchema({
+            typeDefs: graphqlTypeDefs,
+            resolvers: graphqlResolvers,
+        }),
+        graphiql: true, // Enable GraphiQL UI for testing queries
     })
 )
 

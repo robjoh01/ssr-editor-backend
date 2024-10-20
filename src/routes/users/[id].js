@@ -106,9 +106,9 @@ export const put = [
             }
 
             // Otherwise, return a success message
-            return res.status(200).json({
-                message: `User with ID ${id} was successfully updated.`,
-            })
+            return res
+                .status(200)
+                .send(`User with ID ${id} was successfully updated.`)
         } catch (e) {
             console.error("Error updating user:", e)
             return res

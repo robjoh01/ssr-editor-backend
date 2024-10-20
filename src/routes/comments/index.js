@@ -95,7 +95,8 @@ export const post = [
                 content,
                 documentId: new ObjectId(documentId),
                 userId: new ObjectId(user._id),
-                createdAt: new Date(),
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
             }
 
             // Call the create function with the comment data

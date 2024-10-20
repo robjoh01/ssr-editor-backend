@@ -6,7 +6,7 @@ import {
     createDocument,
     fetchDocument,
     fetchAllDocuments,
-} from "@collections/documents.js"
+} from "@/collections/documents.js"
 
 import adminJWT from "@middlewares/adminJWT.js"
 import authenticateJWT from "@middlewares/authenticateJWT.js"
@@ -147,8 +147,8 @@ export const post = [
                     activeComments: stats.activeComments || 0,
                     activeUsers: stats.activeUsers || 0,
                 },
-                createdAt: new Date(),
-                updatedAt: null,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
             }
 
             // Call the create function with the document data

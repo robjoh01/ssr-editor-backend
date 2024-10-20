@@ -15,14 +15,13 @@ export default (options) => async (req, res, next) => {
     const token = authHeader && authHeader.split(" ")[1]
 
     // If no token is provided, return a 403 error.
-    if (!token) return res.status(403).json({ message: "No token provided" })
+    if (!token) return res.status(403).send("No token provided")
 
     // Verify the token to ensure it is valid and not expired.
     const decoded = await verifyAccessToken(token)
 
     // If the token is invalid or expired, return a 401 error.
-    if (!decoded)
-        return res.status(401).json({ message: "Invalid or expired token" })
+    if (!decoded) return res.status(401).send("Invalid or expired token")
 
     // If the token is valid, inject the decoded token data into the request object
     // for use in subsequent middleware or routes.

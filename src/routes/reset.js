@@ -11,7 +11,6 @@ const initialUsers = [
         isAdmin: true,
         email: "bYxkM@example.com",
         name: "Robin Johannesson",
-        documents: [new ObjectId("67080abb97c1e14ff70913f0")],
         stats: {
             totalDocuments: 1,
             totalEdits: 5,
@@ -29,7 +28,6 @@ const initialUsers = [
         isAdmin: true,
         email: "kZ8hW@example.com",
         name: "Moawya Mearza",
-        documents: [new ObjectId("67080abb97c1e14ff70913f0")],
         stats: {
             totalDocuments: 1,
             totalEdits: 2,
@@ -47,7 +45,6 @@ const initialUsers = [
         isAdmin: false,
         email: "alice@example.com",
         name: "Alice Andersson",
-        documents: [new ObjectId("67080abb97c1e14ff70913f1")],
         stats: {
             totalDocuments: 1,
             totalEdits: 3,
@@ -65,7 +62,6 @@ const initialUsers = [
         isAdmin: false,
         email: "bob@example.com",
         name: "Bob Bergström",
-        documents: [],
         stats: {
             totalDocuments: 0,
             totalEdits: 0,
@@ -142,18 +138,17 @@ const initialDocuments = [
         collaborators: [
             {
                 userId: new ObjectId("66eae0bd0f6e02824705d72a"),
-                createdAt: "9/1/2020, 11:36:33 AM",
-                updatedAt: "9/1/2020, 11:36:33 AM",
-                grant: ["read"],
+                grant: ["read", "write"],
             },
             {
                 userId: new ObjectId("67080b1bc1f55178f0902d77"),
-                createdAt: "9/1/2020, 11:36:33 AM",
-                updatedAt: "9/1/2020, 11:36:33 AM",
+                grant: ["read", "write"],
+            },
+            {
+                userId: new ObjectId("66eae0bd0f6e02824705d72b"),
                 grant: ["read"],
             },
         ],
-        comments: [new ObjectId("66eae1c30f6e0282470624c7")],
         stats: {
             totalEdits: 0,
             totalViews: 10,
@@ -169,7 +164,6 @@ const initialDocuments = [
         title: "React.js",
         content: "Why use React.js?",
         collaborators: [],
-        comments: [],
         stats: {
             totalEdits: 0,
             totalViews: 5,
@@ -188,12 +182,13 @@ const initialDocuments = [
         collaborators: [
             {
                 userId: new ObjectId("66eae0bd0f6e02824705d72a"),
-                createdAt: "9/1/2020, 11:36:33 AM",
-                updatedAt: "9/1/2020, 11:36:33 AM",
+                grant: ["read", "write"],
+            },
+            {
+                userId: new ObjectId("66eae0bd0f6e02824705d72c"),
                 grant: ["read"],
             },
         ],
-        comments: [],
         stats: {
             totalEdits: 0,
             totalViews: 7,
@@ -211,13 +206,18 @@ const initialDocuments = [
             "A comparison between Node.js and Deno, exploring the strengths and weaknesses of each.",
         collaborators: [
             {
-                userId: new ObjectId("66eae0bd0f6e02824705d72b"),
-                createdAt: "9/15/2021, 10:15:00 AM",
-                updatedAt: "9/15/2021, 10:15:00 AM",
+                userId: new ObjectId("66eae0bd0f6e02824705d72a"),
+                grant: ["read", "write"],
+            },
+            {
+                userId: new ObjectId("67080b1bc1f55178f0902d77"),
+                grant: ["read", "write"],
+            },
+            {
+                userId: new ObjectId("66eae0bd0f6e02824705d72c"),
                 grant: ["read", "write"],
             },
         ],
-        comments: [],
         stats: {
             totalEdits: 1,
             totalViews: 3,

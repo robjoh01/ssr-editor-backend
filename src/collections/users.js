@@ -51,7 +51,13 @@ export async function fetchUser(id) {
     const { db } = await getDb()
 
     try {
-        return await db.collection("users").findOne({ _id: new ObjectId(id) })
+        const user = await db
+            .collection("users")
+            .findOne({ _id: new ObjectId(id) })
+
+        if (!user) throw new Error("User not found")
+
+        return user
     } catch (err) {
         console.error(err)
         return {}
@@ -125,16 +131,15 @@ export async function updateUser(id, user) {
     if (!ObjectId.isValid(id))
         throw new Error("Invalid id. Must be a valid ObjectId.")
 
-    const { name, email, password, documents, stats, profilePicture } = user
+    const { name, email, password, stats, profilePicture } = user
 
     const updateData = {
         ...(name && { name }),
         ...(email && { email }),
         ...(password && { passwordHash: await hashPassword(password) }),
-        ...(documents && { documents }),
         ...(stats && { stats }),
         ...(profilePicture && { profilePicture }),
-        updatedAt: new Date(),
+        updatedAt: new Date().toISOString(),
     }
 
     const { db } = await getDb()
@@ -168,7 +173,7 @@ export async function updateUserLastLogin(id) {
         throw new Error("Invalid id. Must be a valid ObjectId.")
 
     const updateData = {
-        lastLogin: new Date(),
+        lastLogin: new Date().toISOString(),
     }
 
     const { db } = await getDb()

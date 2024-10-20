@@ -61,7 +61,6 @@ export const get = [
  *  - `name` (required): Name of the user.
  *  - `email` (required): Email of the user.
  *  - `password` (required): Password of the user.
- *  - `documents` (optional): List of documents associated with the user.
  *  - `stats` (optional): The stats of the user including totalEdits, totalComments, and totalDocuments.
  *  - `profilePicture` (optional): A URL to the profile picture of the user.
  *
@@ -81,7 +80,6 @@ export const post = [
                 name,
                 email,
                 password,
-                documents = [],
                 stats = {},
                 profilePicture = "",
             } = req.body
@@ -103,13 +101,6 @@ export const post = [
                     .status(400)
                     .send("Bad Request! Invalid password format.")
 
-            documents.forEach((doc) => {
-                if (!ObjectId.isValid(doc))
-                    return res
-                        .status(400)
-                        .send("Bad Request! Invalid documents format.")
-            })
-
             const hashedPassword = await hashPassword(password)
 
             // Prepare user with default stats if not provided
@@ -117,14 +108,14 @@ export const post = [
                 name,
                 email,
                 passwordHash: hashedPassword,
-                documents,
                 stats: {
                     totalEdits: stats.totalEdits || 0,
                     totalComments: stats.totalComments || 0,
                     totalDocuments: stats.totalDocuments || 0,
                 },
                 profilePicture,
-                createdAt: new Date(),
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
             }
 
             // Call the create function with the user data

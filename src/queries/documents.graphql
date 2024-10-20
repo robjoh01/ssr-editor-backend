@@ -1,0 +1,8 @@
+Query {
+    reviews {
+        rating
+        author {
+            name
+        }
+    }
+}
