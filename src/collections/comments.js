@@ -65,8 +65,11 @@ export async function fetchComment(id) {
  *
  * @async
  *
- * @param {string} ownerId - The ID of the owner.
- * @param {Object} comment - The comment.
+ * @param {string} comment - The comment.
+ * @param {string} comment.userId - The ID of the user.
+ * @param {string} comment.documentId - The ID of the document.
+ * @param {string} comment.position - The position of the comment.
+ * @param {string} comment.content - The content of the comment.
  * @return {Promise<object>} - The created comment as an object.
  * @throws {Error} If the comment could not be created.
  */
@@ -74,7 +77,10 @@ export async function createComment(comment) {
     const { db } = await getDb()
 
     try {
-        return await db.collection("comments").insertOne(comment)
+        return await db.collection("comments").insertOne({
+            ...comment,
+            createdAt: new Date().toISOString(),
+        })
     } catch (err) {
         console.error(err)
         return {}
@@ -107,7 +113,7 @@ export async function updateComment(id, content) {
             {
                 $set: {
                     content,
-                    updatedAt: new Date(),
+                    updatedAt: new Date().toISOString(),
                 },
             }
         )

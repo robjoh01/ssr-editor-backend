@@ -1,11 +1,9 @@
 "use strict"
 
-import { fetchUser, updateUser } from "@collections/users.js"
-import validator from "validator"
 import authenticateJWT from "@middlewares/authenticateJWT.js"
+import validator from "validator"
 
-import { fetchDocument } from "@collections/documents.js"
-import { fetchComment } from "@/collections/comments.js"
+import { fetchUser, updateUser, removeUser } from "@collections/users.js"
 
 /**
  * Get current user details in the database.
@@ -14,7 +12,7 @@ import { fetchComment } from "@/collections/comments.js"
  *  - `accessToken` (required): The access token of the user.
  *
  * Example API call:
- * GET /api/auth/details
+ * GET /api/auth/user
  *
  * @async
  * @param {object} req - The request object.
@@ -30,36 +28,16 @@ export const get = [
 
             // Check if user exists
             if (!details) {
-                return res.status(404).json({ message: "User not found" })
+                return res.status(404).send("User not found")
             }
 
             // Remove the password hash from the response
             delete details.passwordHash
 
-            // Fetch documents and their comments
-            const documentsWithComments = await Promise.all(
-                details.documents.map(async (documentId) => {
-                    const document = await fetchDocument(documentId)
-
-                    if (document) {
-                        const comments = await Promise.all(
-                            document.comments.map(async (commentId) => {
-                                return await fetchComment(commentId)
-                            })
-                        )
-                        return { ...document, comments } // Include comments in the document
-                    }
-                    return null // Return null if document not found
-                })
-            )
-
-            // Filter out any null documents
-            details.documents = documentsWithComments.filter(Boolean)
-
             return res.status(200).json(details)
         } catch (error) {
             console.error("Error fetching user details:", error)
-            return res.status(500).json({ message: "Internal server error" })
+            return res.status(500).send("Internal server error")
         }
     },
 ]
@@ -74,41 +52,42 @@ export const get = [
  *  - name (optional): The new name of the user.
  *  - email (optional): The new email of the user.
  *  - password (optional): The new password of the user.
+ *  - profilePicture (optional): The new profile picture of the user.
+ *  - stats (optional): The new stats of the user including totalEdits, totalComments, and totalDocuments.
+ *  - returnValue (optional): If true, the updated user will be returned in the response.
  *
  * Example API call:
- * PUT /api/auth/details
+ * PUT /api/auth/user
  *
  * @async
  * @param {object} req - The request object, containing the user ID in the params.
  * @param {object} res - The response object, used to send the user back to the client.
- * @returns {Promise<void>} Sends the user as a JSON response or an error message if not found.
+ * @returns {Promise<void>} Sends the updated user as a JSON response or an error message if not found.
  */
 export const put = [
     authenticateJWT(),
     async (req, res) => {
         const { user } = req
 
-        if (!user) return res.status(401).send("Unauthorized")
-
         const returnValue = req.query.returnValue === "true"
-        const { name, email, password } = req.body
+        const { name, email, password, stats, profilePicture } = req.body
 
         if (!name && !email && !password)
-            return res
-                .status(400)
-                .send("Bad Request! Missing required parameters.")
+            return res.status(400).send("Bad Request! Missing update data.")
 
         if (email && !validator.isEmail(email))
-            return res.status(400).send("Bad Request! Invalid email format.")
+            return res.status(400).send("Bad Request! Invalid email.")
 
         if (password && !validator.isStrongPassword(password))
-            return res.status(400).send("Bad Request! Invalid password format.")
+            return res.status(400).send("Bad Request! Invalid password.")
 
         try {
             const updatedUser = await updateUser(user._id, {
                 name,
                 email,
                 password,
+                stats,
+                profilePicture,
             })
 
             if (!updatedUser)
@@ -121,14 +100,56 @@ export const put = [
                 return res.status(200).json(newUserDetails)
             }
 
-            return res.status(200).json({
-                message: `User with ID ${user._id} was successfully updated.`,
-            })
+            return res
+                .status(200)
+                .json(`User with ID ${user._id} was successfully updated.`)
         } catch (e) {
             console.error("Error updating user:", e)
             return res
                 .status(500)
                 .send("Internal Server Error while updating user.")
+        }
+    },
+]
+
+/**
+ * Delete current user in the database.
+ *
+ * Request Headers:
+ *  - `accessToken` (required): The access token of the user.
+ *
+ * Request Body:
+ *  - returnValue (optional): If true, the deleted user will be returned in the response.
+ *
+ * Example API call:
+ * DELETE /api/auth/user
+ *
+ * @async
+ * @param {object} req - The request object, containing the user ID in the params.
+ * @param {object} res - The response object, used to send the user back to the client.
+ * @returns {Promise<void>}
+ */
+export const del = [
+    authenticateJWT(),
+    async (req, res) => {
+        const { user } = req
+
+        try {
+            const deletedUser = await removeUser(user._id)
+
+            if (!deletedUser)
+                return res
+                    .status(404)
+                    .send(`No user found with ID ${user._id} to delete.`)
+
+            return res
+                .status(200)
+                .json(`User with ID ${user._id} was successfully deleted.`)
+        } catch (e) {
+            console.error("Error deleting user:", e)
+            return res
+                .status(500)
+                .send("Internal Server Error while deleting user.")
         }
     },
 ]

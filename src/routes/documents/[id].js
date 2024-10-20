@@ -6,7 +6,7 @@ import {
     fetchDocument,
     updateDocument,
     removeDocument,
-} from "@collections/documents.js"
+} from "@/collections/documents.js"
 
 import adminJWT from "@middlewares/adminJWT.js"
 
@@ -59,7 +59,6 @@ export const get = [
  *  - title (optional): The new title of the document.
  *  - content (optional): The new content of the document.
  *  - collaborators (optional): Updated list of collaborators.
- *  - comments (optional): Updated list of comments.
  *  - stats (optional): Updated document statistics (totalEdits, totalViews, activeComments, activeUsers).
  *
  * Query Parameters:
@@ -74,7 +73,6 @@ export const get = [
  *   "content": "Updated content",
  *   "ownerId": "66eae0bd0f6e02824705d72c",
  *   "collaborators": [],
- *   "comments": [],
  *   "stats": {
  *     "totalEdits": 5,
  *     "totalViews": 100,
@@ -129,12 +127,11 @@ export const put = [
             title = null,
             content = null,
             collaborators = null,
-            comments = null,
             stats = null,
         } = req.body
 
         // Check if any properties are provided for update
-        if (!title && !content && !collaborators && !comments && !stats) {
+        if (!title && !content && !collaborators && !stats) {
             return res.status(400).send("Bad Request! No properties to update.")
         }
 
@@ -144,7 +141,6 @@ export const put = [
         if (title) updateProps.title = title
         if (content) updateProps.content = content
         if (collaborators) updateProps.collaborators = collaborators
-        if (comments) updateProps.comments = comments
         if (stats) updateProps.stats = stats
 
         try {
@@ -162,9 +158,9 @@ export const put = [
             }
 
             // Otherwise, return a success message
-            return res.status(200).json({
-                message: `Document with ID ${id} was successfully updated.`,
-            })
+            return res
+                .status(200)
+                .send(`Document with ID ${id} was successfully updated.`)
         } catch (e) {
             console.error("Error updating document:", e)
             return res

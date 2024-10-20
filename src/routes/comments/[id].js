@@ -98,9 +98,9 @@ export const put = [
             }
 
             // Otherwise, return a success message
-            return res.status(200).json({
-                message: `Comment with ID ${id} was successfully updated.`,
-            })
+            return res
+                .status(200)
+                .send(`Comment with ID ${id} was successfully updated.`)
         } catch (e) {
             console.error("Error updating comment:", e)
             return res

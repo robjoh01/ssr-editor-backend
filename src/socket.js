@@ -1,7 +1,7 @@
 "use strict"
 
 import { Server } from "socket.io"
-import { fetchDocument, updateDocument } from "@collections/documents.js"
+import { fetchDocument, updateDocument } from "@/collections/documents.js"
 
 export default function initSocket(server) {
     // Attach socket.io to the HTTP server

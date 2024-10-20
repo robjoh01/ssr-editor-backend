@@ -6,7 +6,7 @@ import {
     createDocument,
     updateDocument,
     removeDocument,
-} from "@collections/documents.js"
+} from "@/collections/documents.js"
 
 import { get as allRoute } from "@/routes/documents/all.js"
 import {

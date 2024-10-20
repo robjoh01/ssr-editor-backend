@@ -89,11 +89,10 @@ export async function createDocument(document) {
  * @async
  * @param {string} id - The id of the document (required).
  * @param {Object} [document] - Optional properties to update.
+ * @param {ObjectId} [document.ownerId] - The owner of the document.
  * @param {string} [document.title] - The title of the document.
  * @param {string} [document.content] - The content of the document.
- * @param {ObjectId} [document.ownerId] - The owner of the document.
  * @param {Array} [document.collaborators] - List of collaborators to update.
- * @param {Array} [document.comments] - List of comments to update.
  * @param {Object} [document.stats] - Stats to update (totalEdits, totalViews, activeComments, activeUsers).
  *
  * @return {Promise<void>}
@@ -105,16 +104,15 @@ export async function updateDocument(id, document = {}) {
     if (!ObjectId.isValid(id))
         throw new Error("Invalid id. Must be a valid ObjectId.")
 
-    const { title, content, ownerId, collaborators, comments, stats } = document
+    const { title, content, ownerId, collaborators, stats } = document
 
     const updateData = {
         ...(title && { title }),
         ...(content && { content }),
         ...(ownerId && { ownerId: new ObjectId(ownerId) }),
         ...(collaborators && { collaborators }),
-        ...(comments && { comments }),
         ...(stats && { stats }),
-        updatedAt: new Date(),
+        updatedAt: new Date().toISOString(),
     }
 
     const { db } = await getDb()

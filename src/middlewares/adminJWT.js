@@ -12,8 +12,7 @@ export default (options) => [
     async (req, res, next) => {
         const { user } = req
 
-        if (!user.isAdmin)
-            return res.status(403).json({ message: "Not an admin" })
+        if (!user.isAdmin) return res.status(403).send("Not an admin")
 
         next()
     },
