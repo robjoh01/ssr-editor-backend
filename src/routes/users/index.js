@@ -73,10 +73,11 @@ export const get = [
  * @returns {Promise<void>} Sends the created user as a JSON response or an error message if not created.
  */
 export const post = [
-    authenticateJWT(),
+    adminJWT(),
     async (req, res) => {
         try {
             const {
+                isAdmin,
                 name,
                 email,
                 password,
@@ -105,6 +106,7 @@ export const post = [
 
             // Prepare user with default stats if not provided
             const user = {
+                isAdmin,
                 name,
                 email,
                 passwordHash: hashedPassword,
@@ -116,6 +118,7 @@ export const post = [
                 profilePicture,
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
+                lastLogin: new Date().toISOString(),
             }
 
             // Call the create function with the user data
@@ -126,8 +129,8 @@ export const post = [
 
             const createdUser = await fetchUser(result.insertedId)
             return res.status(201).json(createdUser)
-        } catch (e) {
-            console.error(e)
+        } catch (err) {
+            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },

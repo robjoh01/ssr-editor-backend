@@ -13,7 +13,7 @@ import {
     get as getRoute,
     put as updateRoute,
     del as removeRoute,
-} from "@/routes/documents/[id].js"
+} from "@/routes/documents/[id]/index.js"
 import { post as createRoute } from "@/routes/documents/create.js"
 
 // Mock the implementation of fetchAllDocuments

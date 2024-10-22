@@ -39,8 +39,8 @@ export const get = [
                 return res.status(404).send(`No document found with ID ${id}.`)
 
             return res.status(200).json(doc)
-        } catch (e) {
-            console.error(e)
+        } catch (err) {
+            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },
@@ -216,8 +216,8 @@ export const del = [
                     .send(`Document with ID ${id} was successfully deleted.`)
 
             return res.status(500).send("Failed to delete the document.")
-        } catch (e) {
-            console.error(e)
+        } catch (err) {
+            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },

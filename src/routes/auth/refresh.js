@@ -9,7 +9,7 @@ import { signAccessToken, verifyRefreshToken } from "@utils/token.js"
  *  - `refreshToken` (required): The refresh token of the user.
  *
  * Example API call:
- * GET /api/auth/refresh
+ * POST /api/auth/refresh
  *
  * @async
  * @param {object} req - The request object.
@@ -27,7 +27,18 @@ export const post = async (req, res) => {
     if (!user) return res.status(403).send("Invalid refresh token")
 
     // Generate new access token
-    const newAccessToken = signAccessToken({ _id: user._id, email: user.email })
+    const newAccessToken = signAccessToken({
+        _id: user._id,
+        email: user.email,
+        isAdmin: user.isAdmin,
+    })
 
-    return res.status(200).json({ accessToken: newAccessToken })
+    return res.status(200).json({
+        accessToken: newAccessToken,
+        user: {
+            _id: user._id,
+            email: user.email,
+            isAdmin: user.isAdmin,
+        },
+    })
 }

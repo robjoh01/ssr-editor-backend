@@ -28,8 +28,8 @@ export const post = [
         // Clear the refresh token cookie
         res.clearCookie("refreshToken", {
             httpOnly: true,
-            sameSite: "Strict",
             secure: true,
+            sameSite: "None",
         })
 
         return res.status(200).send("Logout successful")
