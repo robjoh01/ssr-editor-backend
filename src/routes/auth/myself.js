@@ -22,7 +22,7 @@ import { fetchUser, updateUser, removeUser } from "@collections/users.js"
 export const get = [
     authenticateJWT(),
     async (req, res) => {
-        const { user } = req
+        const { user, accessToken } = req
         try {
             const details = await fetchUser(user._id)
 
@@ -34,7 +34,10 @@ export const get = [
             // Remove the password hash from the response
             delete details.passwordHash
 
-            return res.status(200).json(details)
+            return res.status(200).json({
+                user: details,
+                accessToken,
+            })
         } catch (error) {
             console.error("Error fetching user details:", error)
             return res.status(500).send("Internal server error")

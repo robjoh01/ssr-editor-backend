@@ -9,6 +9,8 @@ import validator from "validator"
 const resolvers = {
     Query: {
         async comments(parent, args, context) {
+            if (!context.isValid) throw new Error("Invalid user")
+
             if (!context.user.isAdmin)
                 throw new Error(
                     "Access denied! Not an admin. If you want to accees your comments, try query 'myself.ownedDocuments.comments' or 'myself.sharedDocuments.comments' instead."
@@ -27,6 +29,8 @@ const resolvers = {
         },
 
         async comment(parent, args, context) {
+            if (!context.isValid) throw new Error("Invalid user")
+
             if (!context.user.isAdmin)
                 throw new Error(
                     "Access denied! Not an admin. If you want to accees your comments, try query 'myself.ownedDocuments.comments' or 'myself.sharedDocuments.comments' instead."
@@ -53,6 +57,8 @@ const resolvers = {
         },
 
         async documents(parent, args, context) {
+            if (!context.isValid) throw new Error("Invalid user")
+
             if (!context.user.isAdmin)
                 throw new Error(
                     "Access denied! Not an admin. If you want to accees your documents, try query 'myself.ownedDocuments' or 'myself.sharedDocuments' instead."
@@ -71,6 +77,8 @@ const resolvers = {
         },
 
         async document(parent, args, context) {
+            if (!context.isValid) throw new Error("Invalid user")
+
             if (!context.user.isAdmin)
                 throw new Error(
                     "Access denied! Not an admin. If you want to accees your documents, try query 'myself.ownedDocuments' or 'myself.sharedDocuments' instead."
@@ -97,6 +105,8 @@ const resolvers = {
         },
 
         async users(parent, args, context) {
+            if (!context.isValid) throw new Error("Invalid user")
+
             if (!context.user.isAdmin)
                 throw new Error(
                     "Access denied! Not an admin. If you want to accees your documents, try query 'myself' instead."
@@ -115,6 +125,8 @@ const resolvers = {
         },
 
         async user(parent, args, context) {
+            if (!context.isValid) throw new Error("Invalid user")
+
             if (!context.user.isAdmin)
                 throw new Error(
                     "Access denied! Not an admin. If you want to accees your documents, try query 'myself' instead."
@@ -141,6 +153,8 @@ const resolvers = {
         },
 
         async myself(parent, args, context) {
+            if (!context.isValid) throw new Error("Invalid user")
+
             const { db } = await getDb()
 
             try {

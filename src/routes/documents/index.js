@@ -114,7 +114,7 @@ export const get = [
  * @returns {Promise<void>} Sends the created document or an error message back to the client.
  */
 export const post = [
-    authenticateJWT(),
+    adminJWT(),
     async (req, res) => {
         const { user } = req
 
@@ -159,8 +159,8 @@ export const post = [
 
             const createdDoc = await fetchDocument(result.insertedId)
             return res.status(201).json(createdDoc)
-        } catch (e) {
-            console.error(e)
+        } catch (err) {
+            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },

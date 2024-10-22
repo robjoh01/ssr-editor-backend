@@ -35,7 +35,7 @@ export const post = async (req, res, next) => {
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
                 secure: true,
-                sameSite: "Strict",
+                sameSite: "None",
             })
 
             // Send access token to the client

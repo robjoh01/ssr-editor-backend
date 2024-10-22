@@ -1,7 +1,36 @@
 import { getDb } from "@utils/database.js"
 import { ObjectId } from "mongodb"
 
+import validator from "validator"
 import { hashPassword } from "@utils/crypt.js"
+
+/**
+ * Check if a user exists in the database by its id.
+ *
+ * @param {string} id The id of the user to check.
+ * @return {Promise<boolean>} True if the user exists, false otherwise.
+ */
+export async function checkUserExistsByID(id) {
+    if (!id) throw new Error("Missing id")
+
+    if (!ObjectId.isValid(id))
+        throw new Error("Invalid id. Must be a valid ObjectId.")
+
+    const { db } = await getDb()
+
+    try {
+        const user = await db
+            .collection("users")
+            .findOne({ _id: new ObjectId(id) }, { projection: { _id: 1 } })
+
+        return user !== null
+    } catch (err) {
+        console.error(err)
+        return false
+    } finally {
+        await db.client.close()
+    }
+}
 
 /**
  * Retrieve users from the database with optional filters and sorting.
@@ -55,8 +84,6 @@ export async function fetchUser(id) {
             .collection("users")
             .findOne({ _id: new ObjectId(id) })
 
-        if (!user) throw new Error("User not found")
-
         return user
     } catch (err) {
         console.error(err)
@@ -77,6 +104,10 @@ export async function fetchUser(id) {
  * @throws {Error} If the user is not found.
  */
 export async function fetchUserByEmail(email) {
+    if (!email) throw new Error("Missing email")
+
+    if (!validator.isEmail(email)) throw new Error("Invalid email")
+
     const { db } = await getDb()
 
     try {
@@ -132,6 +163,11 @@ export async function updateUser(id, user) {
         throw new Error("Invalid id. Must be a valid ObjectId.")
 
     const { name, email, password, stats, profilePicture } = user
+
+    if (email && !validator.isEmail(email)) throw new Error("Invalid email")
+
+    if (password && !validator.isStrongPassword(password))
+        throw new Error("Invalid password")
 
     const updateData = {
         ...(name && { name }),

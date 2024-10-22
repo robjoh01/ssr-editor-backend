@@ -287,8 +287,8 @@ export const post = [
             await resetCollection(db, "comments", initialComments)
 
             return res.status(200).send("All collections were reset.")
-        } catch (e) {
-            console.error(e)
+        } catch (err) {
+            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },

@@ -39,7 +39,14 @@ app.disable("x-powered-by")
 
 app.use(
     cors({
-        origin: ["http://localhost:5000", "http://localhost:3000"],
+        origin: [
+            "http://localhost:5000",
+            "http://localhost:3000",
+            "http://localhost:1337",
+            "https://jsramverk-roje22-fbb8fgbngxgtfzgf.swedencentral-01.azurewebsites.net",
+            "https://www.student.bth.se",
+            "https://www.student.bth.se/~roje22/editor",
+        ],
         credentials: true, // Allow credentials (cookies, etc.)
     })
 )

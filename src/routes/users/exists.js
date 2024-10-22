@@ -1,6 +1,8 @@
 "use strict"
 
-import { fetchUserByEmail } from "@collections/users.js"
+import { ObjectId } from "mongodb"
+import { checkUserExistsByID } from "@collections/users.js"
+
 import adminJWT from "@middlewares/adminJWT.js"
 
 /**
@@ -21,20 +23,15 @@ export const get = [
     adminJWT(),
     async (req, res) => {
         try {
-            const { email } = req.body
+            const { id } = req.body
 
-            if (!email) return res.status(400).send("Missing email")
+            if (!id) return res.status(400).send("Missing user ID.")
 
-            const user = await fetchUserByEmail(email)
+            if (!ObjectId.isValid(id))
+                return res.status(400).send("Invalid user ID.")
 
-            if (!user)
-                return res
-                    .status(404)
-                    .send(`No user found with email ${email}.`)
-
-            delete user.passwordHash
-
-            return res.status(200).json(user)
+            const doesUserExist = await checkUserExistsByID(id)
+            return res.status(200).json({ exists: doesUserExist })
         } catch (err) {
             console.error(err)
             return res.status(500).send("Internal Server Error")

@@ -34,8 +34,8 @@ export const get = [
                 return res.status(404).send(`No comment found with ID ${id}.`)
 
             return res.status(200).json(doc)
-        } catch (e) {
-            console.error(e)
+        } catch (err) {
+            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },
@@ -128,7 +128,7 @@ export const put = [
  * @returns {Promise<void>} Sends a success message if the comment was deleted, or an error message if not.
  */
 export const del = [
-    authenticateJWT(),
+    adminJWT(),
     async (req, res) => {
         const { id } = req.params
 
@@ -152,8 +152,8 @@ export const del = [
                     .send(`Comment with ID ${id} was successfully deleted.`)
 
             return res.status(500).send("Failed to delete the comment.")
-        } catch (e) {
-            console.error(e)
+        } catch (err) {
+            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },

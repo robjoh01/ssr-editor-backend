@@ -30,8 +30,8 @@ export const get = [
             delete user.passwordHash
 
             return res.status(200).json(user)
-        } catch (e) {
-            console.error(e)
+        } catch (err) {
+            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },
@@ -159,8 +159,8 @@ export const del = [
                     .send(`User with ID ${id} was successfully deleted.`)
 
             return res.status(500).send("Failed to delete the user.")
-        } catch (e) {
-            console.error(e)
+        } catch (err) {
+            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },
