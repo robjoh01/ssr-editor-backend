@@ -4,6 +4,7 @@ import authenticateJWT from "@middlewares/authenticateJWT.js"
 import validator from "validator"
 
 import { fetchUser, updateUser, removeUser } from "@collections/users.js"
+import { sendEmailWithTemplate } from "@/utils/email.js"
 
 /**
  * Get current user details in the database.
@@ -73,9 +74,15 @@ export const put = [
         const { user } = req
 
         const returnValue = req.query.returnValue === "true"
-        const { name, email, password, stats, profilePicture } = req.body
+        const {
+            name = null,
+            email = null,
+            password = null,
+            stats = null,
+            profilePicture = null,
+        } = req.body
 
-        if (!name && !email && !password)
+        if (!name && !email && !password && !stats && !profilePicture)
             return res.status(400).send("Bad Request! Missing update data.")
 
         if (email && !validator.isEmail(email))
@@ -97,6 +104,15 @@ export const put = [
                 return res
                     .status(404)
                     .send(`No user found with ID ${user._id} to update.`)
+
+            await sendEmailWithTemplate(
+                [user.email],
+                "Account Updated",
+                "templates/account/updated.ejs",
+                {
+                    recipientName: user.name || user.email,
+                }
+            )
 
             if (returnValue) {
                 const newUserDetails = await fetchUser(user._id)
@@ -144,6 +160,15 @@ export const del = [
                 return res
                     .status(404)
                     .send(`No user found with ID ${user._id} to delete.`)
+
+            await sendEmailWithTemplate(
+                [user.email],
+                "Account deleted",
+                "templates/account/deleted.ejs",
+                {
+                    recipientName: user.name || user.email,
+                }
+            )
 
             return res
                 .status(200)

@@ -9,7 +9,6 @@ import {
 } from "@/collections/documents.js"
 
 import adminJWT from "@middlewares/adminJWT.js"
-import authenticateJWT from "@middlewares/authenticateJWT.js"
 
 /**
  * Retrieve all documents with optional filters and sorting.
@@ -155,7 +154,7 @@ export const post = [
             const result = await createDocument(document)
 
             if (!result.acknowledged)
-                throw new Error("Failed to create document")
+                return res.status(500).send("Failed to create the document.")
 
             const createdDoc = await fetchDocument(result.insertedId)
             return res.status(201).json(createdDoc)

@@ -7,7 +7,6 @@ import {
 } from "@collections/comments.js"
 
 import adminJWT from "@middlewares/adminJWT.js"
-import authenticateJWT from "@middlewares/authenticateJWT.js"
 
 /**
  * Retrieve a single comment from the database by its ID.

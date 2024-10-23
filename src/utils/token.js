@@ -2,6 +2,21 @@
 
 import jwt from "jsonwebtoken"
 
+export function signAccountToken(payload) {
+    return jwt.sign(payload, process.env.JWT_ACCOUNT_SECRET, {
+        expiresIn: "48h",
+    })
+}
+
+export async function verifyAccountToken(token) {
+    return new Promise((resolve) => {
+        jwt.verify(token, process.env.JWT_ACCOUNT_SECRET, (err, decoded) => {
+            if (err) return resolve(false)
+            resolve(decoded)
+        })
+    })
+}
+
 /**
  * Signs an access token for the given payload.
  * @param {object} payload - The payload to sign.

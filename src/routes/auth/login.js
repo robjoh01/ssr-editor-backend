@@ -20,7 +20,10 @@ export const post = async (req, res, next) => {
         "local",
         { session: false },
         async (err, user, info) => {
-            if (err) return next(err) // Handle any errors
+            if (err) {
+                return res.status(500).send(err.message)
+            }
+
             if (!user)
                 return res.status(401).json({
                     error: info?.message || "Invalid credentials",
