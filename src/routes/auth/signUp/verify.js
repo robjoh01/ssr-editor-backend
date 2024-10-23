@@ -26,7 +26,7 @@ export const post = async (req, res) => {
 
     if (!decodedToken) return res.status(400).send("Invalid token")
 
-    const { email } = decodedToken
+    const { email, exp } = decodedToken
 
     if (!email) return res.status(400).send("Email is required")
     if (!validator.isEmail(email)) return res.status(400).send("Invalid email")
@@ -45,5 +45,5 @@ export const post = async (req, res) => {
         return res.status(500).send("Internal server error")
     }
 
-    return res.status(200).json({ email })
+    return res.status(200).json({ email, expirationTime: exp })
 }

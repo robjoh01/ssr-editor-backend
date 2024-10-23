@@ -19,7 +19,7 @@ const typeDefs = `#graphql
 
     type DocumentCollaborator {
         user: User!
-        grant: [String!]!
+        canWrite: Boolean!
     }
 
     type DocumentStats {

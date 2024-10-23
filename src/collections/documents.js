@@ -2,6 +2,34 @@ import { getDb } from "@utils/database.js"
 import { ObjectId } from "mongodb"
 
 /**
+ * Check if a document exists in the database by its id.
+ *
+ * @param {string} id The id of the document to check.
+ * @return {Promise<boolean>} True if the document exists, false otherwise.
+ */
+export async function checkDocumentExistsByID(id) {
+    if (!id) throw new Error("Missing id")
+
+    if (!ObjectId.isValid(id))
+        throw new Error("Invalid id. Must be a valid ObjectId.")
+
+    const { db } = await getDb()
+
+    try {
+        const user = await db
+            .collection("documents")
+            .findOne({ _id: new ObjectId(id) }, { projection: { _id: 1 } })
+
+        return user !== null
+    } catch (err) {
+        console.error(err)
+        return false
+    } finally {
+        await db.client.close()
+    }
+}
+
+/**
  * Retrieve documents from the database with optional filters and sorting.
  *
  * @async
@@ -104,7 +132,13 @@ export async function updateDocument(id, document = {}) {
     if (!ObjectId.isValid(id))
         throw new Error("Invalid id. Must be a valid ObjectId.")
 
-    const { title, content, ownerId, collaborators, stats } = document
+    const {
+        title = null,
+        content = null,
+        ownerId = null,
+        collaborators,
+        stats = null,
+    } = document
 
     const updateData = {
         ...(title && { title }),

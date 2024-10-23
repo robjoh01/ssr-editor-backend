@@ -70,17 +70,13 @@ Example URI: `POST` `/api/document/create`
             "userId": "66eae0bd0f6e02824705d72a",
             "createdAt": "9/1/2020, 11:36:33 AM",
             "updatedAt": "9/1/2020, 11:36:33 AM",
-            "grant": [
-                "read"
-            ]
+            "canWrite": false
         },
         {
             "userId": "67080b1bc1f55178f0902d77",
             "createdAt": "9/1/2020, 11:36:33 AM",
             "updatedAt": "9/1/2020, 11:36:33 AM",
-            "grant": [
-                "read"
-            ]
+            "canWrite": false
         }
     ],
     "comments": [

@@ -162,7 +162,13 @@ export async function updateUser(id, user) {
     if (!ObjectId.isValid(id))
         throw new Error("Invalid id. Must be a valid ObjectId.")
 
-    const { name, email, password, stats, profilePicture } = user
+    const {
+        name = null,
+        email = null,
+        password = null,
+        stats = null,
+        profilePicture = null,
+    } = user
 
     if (email && !validator.isEmail(email)) throw new Error("Invalid email")
 

@@ -51,4 +51,6 @@ export const post = async (req, res) => {
             verificationLink: `${redirect}/${token}`,
         }
     )
+
+    return res.status(200).send("Account verification email sent")
 }
