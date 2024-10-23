@@ -85,6 +85,8 @@ const typeDefs = `#graphql
 
         # Non-admin
         myself: User
+        usersByEmail(email: String!): [User]
+        userByEmail(name: String!): User
     }
 
     type Mutation {

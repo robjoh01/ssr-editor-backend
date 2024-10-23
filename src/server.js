@@ -60,16 +60,6 @@ app.set("views", path.join(__dirname, "views")) // Set views directory
 
 app.use(passport.initialize())
 
-// API routes
-app.use(
-    "/api/",
-    bodyParser.json(),
-    bodyParser.urlencoded({ extended: true }),
-    await router({
-        directory: path.join(__dirname, "routes"),
-    })
-)
-
 import authenticateJWT from "@middlewares/authenticateJWT.js"
 
 // Define the GraphQL endpoint
@@ -85,7 +75,17 @@ app.use(
     })
 )
 
+// API routes
+app.use(
+    "/api/",
+    bodyParser.json(),
+    bodyParser.urlencoded({ extended: true }),
+    await router({
+        directory: path.join(__dirname, "routes"),
+    })
+)
+
 // Start the server
-server.listen(port, () => {
+server.listen(port, async () => {
     console.log(`Server is listening on ${port}`)
 })

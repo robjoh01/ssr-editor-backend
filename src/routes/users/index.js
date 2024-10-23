@@ -1,12 +1,9 @@
 "use strict"
 
-import { ObjectId } from "mongodb"
 import { createUser, fetchUser, fetchAllUsers } from "@collections/users.js"
 import { hashPassword } from "@utils/crypt.js"
 
 import adminJWT from "@middlewares/adminJWT.js"
-import authenticateJWT from "@middlewares/authenticateJWT.js"
-
 import validator from "validator"
 
 /**
@@ -125,7 +122,7 @@ export const post = [
             const result = await createUser(user)
 
             if (!result.acknowledged)
-                throw new Error("Failed to create the user.")
+                return res.status(500).send("Internal Server Error")
 
             const createdUser = await fetchUser(result.insertedId)
             return res.status(201).json(createdUser)

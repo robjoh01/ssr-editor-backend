@@ -10,7 +10,6 @@ import {
 import { validateCommentPosition } from "@/utils/regex.js"
 
 import adminJWT from "@middlewares/adminJWT.js"
-import authenticateJWT from "@middlewares/authenticateJWT.js"
 
 /**
  * Retrieve all comments with optional filters and sorting.
@@ -103,7 +102,7 @@ export const post = [
             const result = await createComment(comment)
 
             if (!result.acknowledged)
-                throw new Error("Failed to create comment")
+                return res.status(500).send("Failed to create the comment.")
 
             const createdDoc = await fetchComment(result.insertedId)
             return res.status(201).json(createdDoc)

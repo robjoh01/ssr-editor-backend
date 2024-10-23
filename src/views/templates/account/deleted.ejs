@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Account Deletion Notification</title>
+        <style>
+            /* Reset styles to avoid inherited styles from email clients */
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+                border: 0;
+                font-size: 100%;
+                font-family: Arial, sans-serif;
+                background-color: #f6f6f6; /* Light background for the body */
+                color: #333333; /* Dark gray for readable text */
+            }
+
+            /* Container for email content */
+            .email-container {
+                width: 100%;
+                max-width: 600px;
+                margin: 0 auto; /* Center the email */
+                background-color: #ffffff; /* White background for content */
+                border-radius: 5px;
+                padding: 20px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            }
+
+            /* Heading styles */
+            h1,
+            h2,
+            h3 {
+                font-family: "Helvetica", Arial, sans-serif;
+                color: #2c3e50; /* Dark blue for headings */
+                margin-bottom: 20px;
+            }
+
+            /* Paragraphs */
+            p {
+                line-height: 1.6;
+                margin-bottom: 20px;
+                color: #555555; /* Medium gray for paragraph text */
+            }
+
+            /* Links */
+            a {
+                color: #3498db; /* Blue color for links */
+                text-decoration: none;
+            }
+
+            a:hover {
+                text-decoration: underline;
+            }
+
+            /* Footer */
+            .email-footer {
+                font-size: 12px;
+                color: #777777; /* Lighter gray for footer text */
+                margin-top: 40px;
+                text-align: center;
+            }
+
+            /* Media query for responsiveness */
+            @media screen and (max-width: 600px) {
+                .email-container {
+                    padding: 10px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="email-container">
+            <img
+                src="https://raw.githubusercontent.com/robjoh01/ssr-editor-backend/71865aedad1265ce6f4338a65969d34fce75498c/public/img/ssr_editor.jpg"
+                alt="Banner Image"
+                style="width: 100%; height: auto; border-radius: 5px"
+            />
+
+            <h1>Account Deletion Confirmation</h1>
+            <h2>Hello, <%= recipientName %>!</h2>
+            <p>
+                We are sorry to inform you that your account has been
+                successfully deleted.
+            </p>
+            <p>
+                Please note that this action is irreversible, and your data
+                cannot be recovered.
+            </p>
+            <p>
+                We appreciate your time with us and wish you all the best in
+                your future endeavors.
+            </p>
+
+            <div class="email-footer">
+                <p>
+                    If you have any further questions or concerns, feel free to
+                    reach out to us.
+                </p>
+            </div>
+        </div>
+    </body>
+</html>
