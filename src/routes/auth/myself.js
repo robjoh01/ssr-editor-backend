@@ -159,7 +159,7 @@ export const del = [
             if (!deletedUser)
                 return res
                     .status(404)
-                    .send(`No user found with ID ${user._id} to delete.`)
+                    .send(`User with ID ${user._id} not found.`)
 
             await sendEmailWithTemplate(
                 [user.email],

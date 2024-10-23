@@ -158,15 +158,16 @@ const resolvers = {
             if (!context.isValid) throw new Error("Invalid user")
 
             const { email } = args
-
-            if (!email) throw new Error("Missing email")
-            if (!validator.isEmail(email)) throw new Error("Invalid email")
-
             const { db } = await getDb()
 
             try {
                 // Fetch the users
-                return await db.collection("users").find({ email }).toArray()
+                return await db
+                    .collection("users")
+                    .find({
+                        email: { $regex: email, $options: "i" },
+                    })
+                    .toArray()
             } catch (err) {
                 console.error(err)
                 return []

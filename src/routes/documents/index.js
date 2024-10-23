@@ -15,7 +15,7 @@ import adminJWT from "@middlewares/adminJWT.js"
  *
  * Query Parameters:
  *  - `userId` (optional): Filter by either the `ownerId` or the `collaboratorId`.
- *  - `grant` (optional): Comma-separated list of grants (e.g., "read,write"). Filters documents where the specified collaborator has *all* of the listed grants.
+ *  - `canWrite` (optional): Filter by whether the user can write to the document.
  *  - `title` (optional): Search for documents with a title that matches the provided string (case-insensitive).
  *  - `totalViews` (optional): Filter by the total number of views (exact match).
  *  - `activeUsers` (optional): Filter by the number of active users on a document (exact match).
@@ -24,7 +24,7 @@ import adminJWT from "@middlewares/adminJWT.js"
  *      - `"alphabetical"`: Sort by the `title` field in ascending order (alphabetically).
  *
  * Example API call:
- * GET /api/documents?userId=123&title=Lorem&collaboratorId=456&collaboratorGrant=read,write&sort=alphabetical
+ * GET /api/documents?userId=123&title=Lorem&collaboratorId=456&canWrite=true&sort=alphabetical
  *
  * @async
  * @param {object} req - The request object.
@@ -35,7 +35,7 @@ export const get = [
     adminJWT(),
     async (req, res) => {
         try {
-            const { userId, title, totalViews, activeUsers, grants, sort } =
+            const { userId, title, totalViews, activeUsers, canWrite, sort } =
                 req.query
 
             // Construct filters based on query parameters
@@ -47,19 +47,13 @@ export const get = [
                 orConditions.push({ ownerId: new ObjectId(userId) }) // Filter by owner ID
             }
 
-            // Filter for documents that the user has access to, based on grants
-            if (userId && grants) {
-                // Split the grants string into an array if it's provided
-                const grantArray = Array.isArray(grants)
-                    ? grants
-                    : grants.split(",").map((g) => g.trim())
-
-                // Add collaborator filter if grants exist
+            // Filter for documents that the user has access to
+            if (userId && canWrite) {
                 orConditions.push({
                     collaborators: {
                         $elemMatch: {
                             userId: new ObjectId(userId),
-                            grant: { $all: grantArray }, // Use grants to filter
+                            canWrite,
                         },
                     },
                 })

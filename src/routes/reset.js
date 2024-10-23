@@ -138,15 +138,15 @@ const initialDocuments = [
         collaborators: [
             {
                 userId: new ObjectId("66eae0bd0f6e02824705d72a"),
-                grant: ["read", "write"],
+                canWrite: true,
             },
             {
                 userId: new ObjectId("67080b1bc1f55178f0902d77"),
-                grant: ["read", "write"],
+                canWrite: true,
             },
             {
                 userId: new ObjectId("66eae0bd0f6e02824705d72b"),
-                grant: ["read"],
+                canWrite: false,
             },
         ],
         stats: {
@@ -182,11 +182,11 @@ const initialDocuments = [
         collaborators: [
             {
                 userId: new ObjectId("66eae0bd0f6e02824705d72a"),
-                grant: ["read", "write"],
+                canWrite: true,
             },
             {
                 userId: new ObjectId("66eae0bd0f6e02824705d72c"),
-                grant: ["read"],
+                canWrite: false,
             },
         ],
         stats: {
@@ -207,15 +207,15 @@ const initialDocuments = [
         collaborators: [
             {
                 userId: new ObjectId("66eae0bd0f6e02824705d72a"),
-                grant: ["read", "write"],
+                canWrite: true,
             },
             {
                 userId: new ObjectId("67080b1bc1f55178f0902d77"),
-                grant: ["read", "write"],
+                canWrite: true,
             },
             {
                 userId: new ObjectId("66eae0bd0f6e02824705d72c"),
-                grant: ["read", "write"],
+                canWrite: true,
             },
         ],
         stats: {
