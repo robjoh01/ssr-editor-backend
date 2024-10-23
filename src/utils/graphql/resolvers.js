@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 "use strict"
 
 import { ObjectId } from "mongodb"
@@ -8,7 +10,7 @@ import validator from "validator"
 
 const resolvers = {
     Query: {
-        async comments(context) {
+        async comments(parent, args, context) {
             if (!context.isValid) throw new Error("Invalid user")
 
             if (!context.user.isAdmin)
@@ -28,7 +30,7 @@ const resolvers = {
             }
         },
 
-        async comment(args, context) {
+        async comment(parent, args, context) {
             if (!context.isValid) throw new Error("Invalid user")
 
             if (!context.user.isAdmin)
@@ -56,7 +58,7 @@ const resolvers = {
             }
         },
 
-        async documents(context) {
+        async documents(parent, args, context) {
             if (!context.isValid) throw new Error("Invalid user")
 
             if (!context.user.isAdmin)
@@ -76,7 +78,7 @@ const resolvers = {
             }
         },
 
-        async document(args, context) {
+        async document(parent, args, context) {
             if (!context.isValid) throw new Error("Invalid user")
 
             if (!context.user.isAdmin)
@@ -104,7 +106,7 @@ const resolvers = {
             }
         },
 
-        async users(context) {
+        async users(parent, args, context) {
             if (!context.isValid) throw new Error("Invalid user")
 
             if (!context.user.isAdmin)
@@ -124,7 +126,7 @@ const resolvers = {
             }
         },
 
-        async user(args, context) {
+        async user(parent, args, context) {
             if (!context.isValid) throw new Error("Invalid user")
 
             if (!context.user.isAdmin)
@@ -152,7 +154,7 @@ const resolvers = {
             }
         },
 
-        async usersByEmail(args, context) {
+        async usersByEmail(parent, args, context) {
             if (!context.isValid) throw new Error("Invalid user")
 
             const { email } = args
@@ -173,7 +175,7 @@ const resolvers = {
             }
         },
 
-        async userByEmail(args, context) {
+        async userByEmail(parent, args, context) {
             if (!context.isValid) throw new Error("Invalid user")
 
             const { email } = args
@@ -194,7 +196,7 @@ const resolvers = {
             }
         },
 
-        async myself(context) {
+        async myself(parent, args, context) {
             if (!context.isValid) throw new Error("Invalid user")
 
             const { db } = await getDb()
@@ -212,7 +214,7 @@ const resolvers = {
         },
     },
     Mutation: {
-        async createComment(args, context) {
+        async createComment(parent, args, context) {
             if (!context.user.isAdmin)
                 throw new Error("Access denied! Not an admin.")
 
@@ -230,7 +232,7 @@ const resolvers = {
             }
         },
 
-        async updateComment(args, context) {
+        async updateComment(parent, args, context) {
             if (!context.user.isAdmin)
                 throw new Error("Access denied! Not an admin.")
 
@@ -249,7 +251,7 @@ const resolvers = {
             }
         },
 
-        async deleteComment(args, context) {
+        async deleteComment(parent, args, context) {
             if (!context.user.isAdmin)
                 throw new Error("Access denied! Not an admin.")
 
@@ -268,7 +270,7 @@ const resolvers = {
             }
         },
 
-        async createDocument(args, context) {
+        async createDocument(parent, args, context) {
             if (!context.user.isAdmin)
                 throw new Error("Access denied! Not an admin.")
 
@@ -281,7 +283,7 @@ const resolvers = {
             }
         },
 
-        async updateDocument(args, context) {
+        async updateDocument(parent, args, context) {
             if (!context.user.isAdmin)
                 throw new Error("Access denied! Not an admin.")
 
@@ -303,7 +305,7 @@ const resolvers = {
             }
         },
 
-        async deleteDocument(args, context) {
+        async deleteDocument(parent, args, context) {
             if (!context.user.isAdmin)
                 throw new Error("Access denied! Not an admin.")
 
@@ -322,7 +324,7 @@ const resolvers = {
             }
         },
 
-        async createUser(args, context) {
+        async createUser(parent, args, context) {
             if (!context.user.isAdmin)
                 throw new Error("Access denied! Not an admin.")
 
@@ -344,7 +346,7 @@ const resolvers = {
             }
         },
 
-        async updateUser(args, context) {
+        async updateUser(parent, args, context) {
             if (!context.user.isAdmin)
                 throw new Error("Access denied! Not an admin.")
 
@@ -385,7 +387,7 @@ const resolvers = {
             }
         },
 
-        async deleteUser(args, context) {
+        async deleteUser(parent, args, context) {
             if (!context.user.isAdmin)
                 throw new Error("Access denied! Not an admin.")
 
@@ -404,7 +406,7 @@ const resolvers = {
             }
         },
 
-        async updateMyself(args, context) {
+        async updateMyself(parent, args, context) {
             const { db } = await getDb()
 
             try {
@@ -419,7 +421,7 @@ const resolvers = {
             }
         },
 
-        async deleteMyself(context) {
+        async deleteMyself(parent, args, context) {
             const { db } = await getDb()
 
             try {
@@ -434,7 +436,7 @@ const resolvers = {
     Comment: {
         id: ({ _id }) => _id,
 
-        async document(parent) {
+        async document(parent, args, context) {
             const { documentId } = parent // Assuming 'documentId' is a field in your comment
 
             if (!documentId) return null // Return null if documentId is missing
@@ -454,7 +456,7 @@ const resolvers = {
             }
         },
 
-        async user(parent) {
+        async user(parent, args, context) {
             const { userId } = parent // Assuming 'userId' is a field in your comment
 
             if (!userId) return null // Return null if userId is missing
@@ -506,7 +508,7 @@ const resolvers = {
             }
         },
 
-        async comments(parent) {
+        async comments(parent, args, context) {
             const { db } = await getDb()
 
             try {
@@ -523,7 +525,7 @@ const resolvers = {
         },
     },
     DocumentCollaborator: {
-        async user(parent, context) {
+        async user(parent, args, context) {
             const { userId } = parent // Assuming 'userId' is a field in your document collaborator
 
             if (!userId) return null // Return null if userId is missing
