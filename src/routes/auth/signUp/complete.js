@@ -29,8 +29,12 @@ export const post = async (req, res) => {
     if (!validator.isStrongPassword(password))
         return res.status(400).send("Password is not strong enough")
 
+    if (!token) return res.status(400).send("Token is required")
+
     // Verify token
     const decodedToken = await verifyAccountToken(token)
+
+    if (!decodedToken) return res.status(400).send("Invalid token")
 
     // Check if email from token matches the provided email
     if (decodedToken.email !== email) {
