@@ -44,6 +44,7 @@
         "passport-google-oauth": "^2.0.0",
         "passport-local": "^1.0.0",
         "socket.io": "^4.8.0",
+        "uniqolor": "^1.1.1",
         "validator": "^13.12.0",
         "vm2": "^3.9.19"
     },
@@ -66,12 +67,5 @@
         "@middlewares": "src/middlewares",
         "@collections": "src/collections",
         "@tests": "src/tests"
-    },
-    "jest": {
-        "coverageReporters": [
-            "json",
-            "json-summary",
-            "html"
-        ]
     }
 }

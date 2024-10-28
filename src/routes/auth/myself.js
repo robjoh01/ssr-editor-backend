@@ -153,6 +153,9 @@ export const del = [
     async (req, res) => {
         const { user } = req
 
+        if (user.isAdmin)
+            return res.status(403).send("Cannot delete admin user.")
+
         try {
             const deletedUser = await removeUser(user._id)
 

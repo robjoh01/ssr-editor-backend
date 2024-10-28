@@ -154,20 +154,79 @@ const resolvers = {
             }
         },
 
+        async findUsersForDocument(parent, args, context) {
+            if (!context.isValid) throw new Error("Invalid user")
+
+            const { email, documentId, avoidSelf = false } = args
+
+            if (!email) throw new Error("Missing email")
+            if (!documentId) throw new Error("Missing document id")
+
+            if (!ObjectId.isValid(documentId))
+                throw new Error("Invalid document id")
+
+            const { db } = await getDb()
+
+            try {
+                // Fetch the document to get ownerId and collaborators
+                const document = await db.collection("documents").findOne({
+                    _id: new ObjectId(documentId),
+                })
+
+                if (!document) throw new Error("Document not found")
+
+                // Collect all user IDs to exclude (ownerId + collaborator userIds)
+                const excludedUserIds = [
+                    document.ownerId,
+                    ...document.collaborators.map((collab) => collab.userId),
+                ]
+
+                // Fetch users that match the email and exclude specified userIds
+                const users = await db
+                    .collection("users")
+                    .find({
+                        email: { $regex: email, $options: "i" },
+                        _id: { $nin: excludedUserIds },
+                    })
+                    .toArray()
+
+                if (!users) return []
+
+                // Filter out the current user if specified
+                return avoidSelf
+                    ? users.filter((user) => user.email !== context.user.email)
+                    : users
+            } catch (err) {
+                console.error(err)
+                return []
+            } finally {
+                await db.client.close()
+            }
+        },
+
         async usersByEmail(parent, args, context) {
             if (!context.isValid) throw new Error("Invalid user")
 
-            const { email } = args
+            const { email, avoidSelf = false } = args
+            if (!email) throw new Error("Missing email")
+
             const { db } = await getDb()
 
             try {
                 // Fetch the users
-                return await db
+                const users = await db
                     .collection("users")
                     .find({
                         email: { $regex: email, $options: "i" },
                     })
                     .toArray()
+
+                if (!users) return []
+
+                // Filter out the current user if specified
+                return avoidSelf
+                    ? users.filter((user) => user.email !== context.user.email)
+                    : users
             } catch (err) {
                 console.error(err)
                 return []
@@ -180,9 +239,7 @@ const resolvers = {
             if (!context.isValid) throw new Error("Invalid user")
 
             const { email } = args
-
             if (!email) throw new Error("Missing email")
-            if (!validator.isEmail(email)) throw new Error("Invalid email")
 
             const { db } = await getDb()
 

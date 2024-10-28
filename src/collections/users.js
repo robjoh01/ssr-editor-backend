@@ -8,7 +8,7 @@ import { hashPassword } from "@utils/crypt.js"
  * Check if a user exists in the database by its id.
  *
  * @param {string} id The id of the user to check.
- * @return {Promise<boolean>} True if the user exists, false otherwise.
+ * @return {Promise<ObjectId|undefined>} The id of the user if it exists, undefined otherwise.
  */
 export async function checkUserExistsByID(id) {
     if (!id) throw new Error("Missing id")
@@ -23,10 +23,41 @@ export async function checkUserExistsByID(id) {
             .collection("users")
             .findOne({ _id: new ObjectId(id) }, { projection: { _id: 1 } })
 
-        return user !== null
+        if (!user) return undefined
+
+        return user._id
     } catch (err) {
         console.error(err)
-        return false
+        return undefined
+    } finally {
+        await db.client.close()
+    }
+}
+
+/**
+ * Check if a user exists in the database by its email.
+ *
+ * @param {string} email The email of the user to check.
+ * @return {Promise<ObjectId|undefined>} The id of the user if it exists, undefined otherwise.
+ */
+export async function checkUserExistsByEmail(email) {
+    if (!email) throw new Error("Missing email")
+
+    if (!validator.isEmail(email)) throw new Error("Invalid email")
+
+    const { db } = await getDb()
+
+    try {
+        const user = await db
+            .collection("users")
+            .findOne({ email }, { projection: { _id: 1 } })
+
+        if (!user) return undefined
+
+        return user._id
+    } catch (err) {
+        console.error(err)
+        return undefined
     } finally {
         await db.client.close()
     }

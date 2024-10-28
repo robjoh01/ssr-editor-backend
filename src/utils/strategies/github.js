@@ -11,6 +11,7 @@ const GitHubStrategy = new Strategy(
         callbackURL: "/api/auth/social/callback/github",
     },
     function (accessToken, refreshToken, profile, done) {
+        // TODO: Find or create user via email
         console.log(profile)
 
         done(null, profile)
