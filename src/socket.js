@@ -4,10 +4,7 @@
 
 import { Server } from "socket.io"
 import { fetchDocument, updateDocument } from "@/collections/documents.js"
-import {
-    createComment,
-    fetchAllCommentsFromDocument,
-} from "@/collections/comments.js"
+import { createComment } from "@/collections/comments.js"
 
 import { verifyRefreshToken } from "@utils/token.js"
 import cookie from "cookie"
@@ -70,6 +67,7 @@ export default function initSocket(server) {
         // Join a room
         socket.on("join_room", async (documentId, user) => {
             const document = await fetchDocument(documentId)
+
             if (!document) {
                 socket.emit("error", "Document not found")
                 return
@@ -112,10 +110,8 @@ export default function initSocket(server) {
             // Notify other users about the user joining
             io.to(documentId).emit("users_changed", rooms[documentId])
 
-            const comments = await fetchAllCommentsFromDocument(documentId)
-
             // Send the current document to the newly joined user
-            socket.emit("load_room", document, comments)
+            socket.emit("load_room", document)
 
             // Callback for cursor changes
             socket.on("cursor_pending", ({ range, userId, userName }) => {
