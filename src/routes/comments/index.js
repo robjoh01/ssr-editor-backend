@@ -94,6 +94,7 @@ export const post = [
                 content,
                 documentId: new ObjectId(documentId),
                 userId: new ObjectId(user._id),
+                resolved: false,
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
             }

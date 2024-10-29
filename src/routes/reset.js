@@ -83,6 +83,9 @@ const initialDocuments = [
         content: {
             ops: [
                 {
+                    attributes: {
+                        bold: true,
+                    },
                     insert: "Detta är kursen DV1677 JavaScript-baserade webbramverk.",
                 },
                 {
@@ -112,7 +115,7 @@ const initialDocuments = [
                     insert: "Blekinge Tekniska Högskola",
                 },
                 {
-                    insert: ". Och är en av Sveriges enda högskolekurser i JavaScript ramverk.\n\nKällkoden till denna webbplats finns på ",
+                    insert: ". Och är en av Sveriges enda högskolekurser i JavaScript ramverk. Källkoden till denna webbplats finns på ",
                 },
                 {
                     attributes: {
@@ -131,7 +134,7 @@ const initialDocuments = [
                     insert: '"real-time collaborative text-editor"',
                 },
                 {
-                    insert: "-applikation tillsammans två och två. Vi tar en titt på hur detta samarbetet kan bli optimalt och vilka tekniker och verktyg som finns för att samarbeta om vidareutveckling av kod.\n\n\n",
+                    insert: "-applikation tillsammans två och två. Vi tar en titt på hur detta samarbetet kan bli optimalt och vilka tekniker och verktyg som finns för att samarbeta om vidareutveckling av kod.\n\n",
                 },
             ],
         },
@@ -162,7 +165,31 @@ const initialDocuments = [
     {
         _id: new ObjectId("67080abb97c1e14ff70913f1"),
         title: "React.js",
-        content: "Why use React.js?",
+        content: {
+            ops: [
+                {
+                    attributes: {
+                        bold: true,
+                    },
+                    insert: "React.js is a powerful JavaScript library for building user interfaces.",
+                },
+                {
+                    attributes: {
+                        header: 1,
+                    },
+                    insert: "\n",
+                },
+                {
+                    insert: "\nIt allows developers to create large web applications that can change data, without reloading the page. Its key feature is the ability to manage components efficiently.\n\nLearn more about React's core concepts in this ",
+                },
+                {
+                    attributes: {
+                        link: "https://react.dev/learn",
+                    },
+                    insert: "official documentation.",
+                },
+            ],
+        },
         collaborators: [],
         stats: {
             totalEdits: 0,
@@ -177,8 +204,60 @@ const initialDocuments = [
     {
         _id: new ObjectId("67080abb97c1e14ff70913f2"),
         title: "Why use Express.js?",
-        content:
-            "Express.js is an open-source web framework, built on top of Node.js. The main goal of Express is to provide a simple and flexible framework for building web applications.",
+        content: {
+            ops: [
+                {
+                    attributes: {
+                        bold: true,
+                    },
+                    insert: "Express.js is a fast, unopinionated, minimalist web framework for Node.js.",
+                },
+                {
+                    attributes: {
+                        header: 1,
+                    },
+                    insert: "\n",
+                },
+                {
+                    insert: "\nIt is designed for building web applications and APIs. Its robust set of features makes it ideal for web development.\n\nExplore more about Express.js in this comprehensive guide: ",
+                },
+                {
+                    attributes: {
+                        link: "https://expressjs.com/en/starter/installing.html",
+                    },
+                    insert: "Getting Started with Express.js",
+                },
+                {
+                    insert: "\n\n",
+                },
+                {
+                    attributes: {
+                        italic: true,
+                    },
+                    insert: "You can watch this informative video on Express.js here",
+                },
+                {
+                    insert: ": ",
+                },
+                {
+                    attributes: {
+                        link: "www.youtube.com/watch?v=CnH3kAXSrmU",
+                    },
+                    insert: "Express Crash Course",
+                },
+                {
+                    insert: "\n\n",
+                },
+                {
+                    insert: {
+                        video: "https://www.youtube.com/embed/CnH3kAXSrmU?showinfo=0",
+                    },
+                },
+                {
+                    insert: "\n",
+                },
+            ],
+        },
         collaborators: [
             {
                 userId: new ObjectId("66eae0bd0f6e02824705d72a"),
@@ -201,9 +280,234 @@ const initialDocuments = [
     },
     {
         _id: new ObjectId("67080abb97c1e14ff70913f3"),
-        title: "Node.js vs. Deno",
-        content:
-            "A comparison between Node.js and Deno, exploring the strengths and weaknesses of each.",
+        title: "Report a bug",
+        content: {
+            ops: [
+                {
+                    attributes: {
+                        bold: true,
+                    },
+                    insert: "Reporting a bug is an essential part of the development process.",
+                },
+                {
+                    attributes: {
+                        header: 1,
+                    },
+                    insert: "\n",
+                },
+                {
+                    insert: "\nEffectively reporting bugs is crucial for ensuring a smooth development process. In this article, we will go through the steps to identify and report a bug correctly.\n\nStep 1: Identify the Bug",
+                },
+                {
+                    attributes: {
+                        header: 2,
+                    },
+                    insert: "\n",
+                },
+                {
+                    insert: "Before reporting a bug, make sure you have identified it correctly. Look for:\n",
+                },
+                {
+                    attributes: {
+                        bold: true,
+                    },
+                    insert: "Unexpected Behavior",
+                },
+                {
+                    insert: ": Is the application not functioning as expected? Document what you expected versus what actually happened.",
+                },
+                {
+                    attributes: {
+                        list: "bullet",
+                    },
+                    insert: "\n",
+                },
+                {
+                    attributes: {
+                        bold: true,
+                    },
+                    insert: "Error Messages",
+                },
+                {
+                    insert: ": Pay attention to any error messages or warnings. Note them down, as they can be helpful for diagnostics.",
+                },
+                {
+                    attributes: {
+                        list: "bullet",
+                    },
+                    insert: "\n",
+                },
+                {
+                    attributes: {
+                        bold: true,
+                    },
+                    insert: "Environment",
+                },
+                {
+                    insert: ": Note in which environment the bug occurred (e.g., production, staging, development).",
+                },
+                {
+                    attributes: {
+                        list: "bullet",
+                    },
+                    insert: "\n",
+                },
+                {
+                    attributes: {
+                        header: 2,
+                    },
+                    insert: "\n",
+                },
+                {
+                    insert: "Step 2: Gather Information",
+                },
+                {
+                    attributes: {
+                        header: 2,
+                    },
+                    insert: "\n",
+                },
+                {
+                    insert: "Collect as much information as possible about the bug:\n",
+                },
+                {
+                    attributes: {
+                        bold: true,
+                    },
+                    insert: "Steps to reproduce",
+                },
+                {
+                    insert: ": Clarify the steps taken before the bug occurred. This helps the development team to reproduce the issue.",
+                },
+                {
+                    attributes: {
+                        list: "bullet",
+                    },
+                    insert: "\n",
+                },
+                {
+                    attributes: {
+                        bold: true,
+                    },
+                    insert: "Screenshots/Screen Recordings",
+                },
+                {
+                    insert: ": Visual aids can be very helpful. Consider including images or videos of the bug. You can use tools like ",
+                },
+                {
+                    attributes: {
+                        color: "#2915a3",
+                        link: "https://www.loom.com/",
+                    },
+                    insert: "Loom",
+                },
+                {
+                    insert: " for screen recordings.",
+                },
+                {
+                    attributes: {
+                        list: "bullet",
+                    },
+                    insert: "\n",
+                },
+                {
+                    attributes: {
+                        bold: true,
+                    },
+                    insert: "System Information",
+                },
+                {
+                    insert: ": Include details such as browser version, operating system, and device type. This information can help with diagnostics.",
+                },
+                {
+                    attributes: {
+                        list: "bullet",
+                    },
+                    insert: "\n",
+                },
+                {
+                    attributes: {
+                        header: 2,
+                    },
+                    insert: "\n",
+                },
+                {
+                    insert: "Step 3: Report the Bug",
+                },
+                {
+                    attributes: {
+                        header: 2,
+                    },
+                    insert: "\n",
+                },
+                {
+                    insert: "Once you have all the information, report the bug to your team or the appropriate platform (e.g., JIRA, GitHub, etc.). Be sure to include:\n",
+                },
+                {
+                    attributes: {
+                        bold: true,
+                    },
+                    insert: "Title",
+                },
+                {
+                    insert: ": A brief and descriptive title for the bug.",
+                },
+                {
+                    attributes: {
+                        list: "bullet",
+                    },
+                    insert: "\n",
+                },
+                {
+                    attributes: {
+                        bold: true,
+                    },
+                    insert: "Description",
+                },
+                {
+                    insert: ": Summarize the issue, including all gathered information. Use bullet points for clarity.",
+                },
+                {
+                    attributes: {
+                        list: "bullet",
+                    },
+                    insert: "\n",
+                },
+                {
+                    attributes: {
+                        bold: true,
+                    },
+                    insert: "Links",
+                },
+                {
+                    insert: ": Provide links to relevant resources, such as project documentation or the bug reporting system.",
+                },
+                {
+                    attributes: {
+                        list: "bullet",
+                    },
+                    insert: "\n",
+                },
+                {
+                    attributes: {
+                        header: 2,
+                    },
+                    insert: "\n",
+                },
+                {
+                    insert: "Step 4: Follow Up",
+                },
+                {
+                    attributes: {
+                        header: 2,
+                    },
+                    insert: "\n",
+                },
+                {
+                    insert: "After reporting the bug, keep an eye on any updates or requests for further information from the development team. Being responsive can help expedite the resolution of the issue.\n",
+                },
+            ],
+        },
         collaborators: [
             {
                 userId: new ObjectId("66eae0bd0f6e02824705d72a"),

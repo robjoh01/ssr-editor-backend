@@ -138,9 +138,16 @@ export const put = [
 export const del = [
     adminJWT(),
     async (req, res) => {
+        const { user: self } = req
+
         const { id } = req.params
 
         if (!id) return res.status(400).send("Bad Request! Missing user ID.")
+
+        if (id === self._id.toString())
+            return res
+                .status(403)
+                .send("Forbidden! You cannot delete yourself.")
 
         // Check if the user exists
         const user = await fetchUser(id)

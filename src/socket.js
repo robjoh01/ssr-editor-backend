@@ -1,17 +1,22 @@
 "use strict"
 
+/* eslint-disable */
+
 import { Server } from "socket.io"
 import { fetchDocument, updateDocument } from "@/collections/documents.js"
+import { createComment } from "@/collections/comments.js"
+
 import { verifyRefreshToken } from "@utils/token.js"
 import cookie from "cookie"
+import uniqolor from "uniqolor"
 
 function printLog(message) {
-    console.log(`[SOCKET.IO, ${new Date().toLocaleTimeString()}] {${message}}`)
+    console.log(`[Socket.io, ${new Date().toLocaleTimeString()}] ${message}`)
 }
 
 function printError(message) {
     console.error(
-        `[SOCKET.IO, ${new Date().toLocaleTimeString()}, ERROR] {${message}}`
+        `[Socket.io, ${new Date().toLocaleTimeString()}, ERROR] ${message}`
     )
 }
 
@@ -52,76 +57,146 @@ export default function initSocket(server) {
         }
     })
 
+    const rooms = {} // To track users in rooms
+    const socketToRoomMap = {} // To map socket IDs to document IDs and user info
+
     // Handle socket connections
     io.on("connection", (socket) => {
-        printLog(
-            `A user connected (ID: ${socket.id}, email: ${socket.user?.email})`
-        )
+        printLog(`A user connected (ID: ${socket.id})`)
 
         // Join a room
-        socket.on("join-room", async (documentId) => {
-            try {
-                const document = await fetchDocument(documentId)
-                if (!document) throw new Error("Document not found")
+        socket.on("join_room", async (documentId, user) => {
+            const document = await fetchDocument(documentId)
 
-                socket.join(documentId)
-                printLog(`User joined room: ${documentId}`)
-
-                // Send the document to the new user
-                socket.emit("load-room", document)
-
-                // Track last saved content and timeout
-                let saveTimeout = null
-                let lastContent = document.content
-
-                // Handle content updates from the client
-                socket.on("send-changes", (delta) => {
-                    socket.broadcast
-                        .to(documentId)
-                        .emit("receive-changes", delta, documentId)
-                })
-
-                // Broadcast cursor updates to other users in the room
-                socket.on("cursor-update", ({ range, userId }) => {
-                    socket.broadcast
-                        .to(documentId)
-                        .emit("cursor-update", { range, userId })
-                })
-
-                // Broadcast comment creation to other users in the room
-                socket.on("comment-create", ({ range, commentId }) => {
-                    console.log(`Comment created: ${commentId} (${range})`)
-
-                    socket.broadcast
-                        .to(documentId)
-                        .emit("comment-create", { range, commentId })
-                })
-
-                // Handle save changes with a cooldown
-                socket.on("save-changes", async (content) => {
-                    clearTimeout(saveTimeout)
-
-                    saveTimeout = setTimeout(async () => {
-                        if (content !== lastContent) {
-                            await updateDocument(documentId, { content })
-                            lastContent = content // Update last saved content
-                        }
-                    }, process.env.SAVE_DELAY || 2000)
-                })
-            } catch (error) {
-                console.error(error)
+            if (!document) {
+                socket.emit("error", "Document not found")
+                return
             }
+
+            if (!user) {
+                socket.emit("error", "User not found")
+                return
+            }
+
+            // Check if the user is the owner or a collaborator
+            const isOwner = document.ownerId.equals(user._id)
+            const collaborator = document.collaborators.find((collab) =>
+                collab.userId.equals(user._id)
+            )
+
+            // If the user is neither the owner nor a collaborator, throw an error
+            if (!isOwner && !collaborator) {
+                socket.emit("error", "Access denied")
+                return
+            }
+
+            // Export the canWrite flag if the user is a collaborator
+            user.canWrite = collaborator ? collaborator.canWrite : true
+
+            // Ensure the room exists
+            if (!rooms[documentId]) {
+                rooms[documentId] = []
+            }
+
+            // Add the user to the room's user list
+            rooms[documentId].push(user)
+
+            // Join the room
+            socket.join(documentId)
+
+            // Map socket ID to the room and user info
+            socketToRoomMap[socket.id] = { documentId, user }
+
+            // Notify other users about the user joining
+            io.to(documentId).emit("users_changed", rooms[documentId])
+
+            // Send the current document to the newly joined user
+            socket.emit("load_room", document)
+
+            // Callback for cursor changes
+            socket.on("cursor_pending", ({ range, userId, userName }) => {
+                // Notify other users
+                socket.broadcast.to(documentId).emit("cursor_changed", {
+                    range,
+                    userId,
+                    userName,
+                    colorDetails: uniqolor(userName),
+                })
+            })
+
+            socket.on("send_comment", async ({ text, index, length }) => {
+                try {
+                    await createComment({
+                        position: `${index}:${length}`,
+                        content: text,
+                        userId: socket.user._id,
+                        documentId,
+                    })
+
+                    // Notify other users
+                    socket.broadcast.to(documentId).emit("receive_comment", {
+                        text,
+                        index,
+                        length,
+                    })
+                } catch (err) {
+                    console.error(err)
+                }
+            })
+
+            // For debouncing save operations
+            let saveTimeout = null
+
+            // Handle saving document changes with a debounce
+            socket.on("send_changes", async ({ title, content }) => {
+                socket.broadcast.to(documentId).emit("receive_changes", content)
+
+                clearTimeout(saveTimeout)
+
+                saveTimeout = setTimeout(async () => {
+                    // Notify all users that the document has been saved
+                    io.to(documentId).emit("save_pending")
+
+                    await updateDocument(documentId, { title, content })
+
+                    // Notify all users that the document has been saved
+                    io.to(documentId).emit("save_success", content)
+                }, process.env.SAVE_DELAY || 750)
+            })
         })
 
-        socket.on("leave-room", (documentId) => {
+        socket.on("leave_room", (documentId, user) => {
+            if (!rooms[documentId]) return
+
+            // Remove the user from the room's user list
+            rooms[documentId] = rooms[documentId].filter(
+                (u) => u._id !== user._id
+            )
+
+            // Notify others
+            io.to(documentId).emit("users_changed", rooms[documentId])
+
+            // Leave the room
             socket.leave(documentId)
-            printLog(`User left room: ${documentId}`)
         })
 
         socket.on("disconnect", () => {
-            printLog(
-                `A user disconnected (ID: ${socket.id}, email: ${socket.user?.email})`
-            )
+            const { documentId, user } = socketToRoomMap[socket.id] || {}
+
+            if (documentId && user) {
+                // Remove the user from the room's user list
+                rooms[documentId] = rooms[documentId].filter(
+                    (u) => u._id !== user._id
+                )
+
+                // Notify others
+                io.to(documentId).emit("users_changed", rooms[documentId])
+
+                // Remove the mapping for the disconnected socket
+                delete socketToRoomMap[socket.id]
+            }
+
+            printLog(`A user disconnected (${socket.id})`)
         })
     })
 }

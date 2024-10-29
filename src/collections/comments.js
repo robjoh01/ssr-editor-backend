@@ -1,5 +1,33 @@
-import { getDb } from "@utils/database.js"
 import { ObjectId } from "mongodb"
+import { getDb } from "@utils/database.js"
+
+/**
+ * Find all comments for a specific document.
+ * @async
+ * @param {string} documentId - The ID of the document.
+ * @return {Promise<array>} The resultset as an array of comments.
+ * @throws {Error} when database operation fails.
+ */
+export async function fetchAllCommentsFromDocument(documentId) {
+    if (!documentId) throw new Error("Missing documentId")
+
+    if (!ObjectId.isValid(documentId))
+        throw new Error("Invalid documentId. Must be a valid ObjectId.")
+
+    const { db } = await getDb()
+
+    try {
+        return await db
+            .collection("comments")
+            .find({ documentId: new ObjectId(documentId) })
+            .toArray()
+    } catch (err) {
+        console.error(err)
+        return []
+    } finally {
+        await db.client.close()
+    }
+}
 
 /**
  * Retrieve comments from the database with optional filters and sorting.
@@ -75,6 +103,8 @@ export async function fetchComment(id) {
  */
 export async function createComment(comment) {
     const { db } = await getDb()
+
+    // TODO: Calculate the hash of the comment, to avoid duplication.
 
     try {
         return await db.collection("comments").insertOne({

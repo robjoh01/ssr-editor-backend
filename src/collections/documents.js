@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb"
  * Check if a document exists in the database by its id.
  *
  * @param {string} id The id of the document to check.
- * @return {Promise<boolean>} True if the document exists, false otherwise.
+ * @return {Promise<ObjectId|undefined>} The id of the document if it exists, undefined otherwise.
  */
 export async function checkDocumentExistsByID(id) {
     if (!id) throw new Error("Missing id")
@@ -16,14 +16,16 @@ export async function checkDocumentExistsByID(id) {
     const { db } = await getDb()
 
     try {
-        const user = await db
+        const document = await db
             .collection("documents")
             .findOne({ _id: new ObjectId(id) }, { projection: { _id: 1 } })
 
-        return user !== null
+        if (!document) return undefined
+
+        return document._id
     } catch (err) {
         console.error(err)
-        return false
+        return undefined
     } finally {
         await db.client.close()
     }
