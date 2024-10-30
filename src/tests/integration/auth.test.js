@@ -107,7 +107,7 @@ describe("Auth API Routes", () => {
 
             const response = await request(app).post("/api/auth/login").send({
                 email: mockUser.email,
-                password: "m#P52s@ap$V",
+                password: process.env.TEST_PASSWORD,
             })
 
             expect(response.status).toBe(200)
@@ -128,7 +128,7 @@ describe("Auth API Routes", () => {
 
             const response = await request(app).post("/api/auth/login").send({
                 email: mockUser.email,
-                password: "password123",
+                password: process.env.TEST_PASSWORD,
             })
 
             expect(response.status).toBe(500)
