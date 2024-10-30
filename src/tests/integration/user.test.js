@@ -135,6 +135,7 @@ describe("User", () => {
             const newUser = {
                 name: "John Doe",
                 email: "john@example.com",
+                // gitguardian:ignore
                 password: process.env.TEST_PASSWORD,
             }
 
@@ -170,6 +171,7 @@ describe("User", () => {
             const response = await request(app).post("/api/users").send({
                 name: "John Doe",
                 email: "john@example.com",
+                // gitguardian:ignore
                 password: process.env.TEST_PASSWORD,
             })
 

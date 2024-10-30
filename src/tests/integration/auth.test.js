@@ -107,6 +107,7 @@ describe("Auth API Routes", () => {
 
             const response = await request(app).post("/api/auth/login").send({
                 email: mockUser.email,
+                // gitguardian:ignore
                 password: process.env.TEST_PASSWORD,
             })
 
@@ -128,6 +129,7 @@ describe("Auth API Routes", () => {
 
             const response = await request(app).post("/api/auth/login").send({
                 email: mockUser.email,
+                // gitguardian:ignore
                 password: process.env.TEST_PASSWORD,
             })
 
