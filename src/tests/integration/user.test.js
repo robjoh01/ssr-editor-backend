@@ -135,8 +135,7 @@ describe("User", () => {
             const newUser = {
                 name: "John Doe",
                 email: "john@example.com",
-                // gitguardian:ignore
-                password: process.env.TEST_PASSWORD,
+                password: "m#P52s@ap$V",
             }
 
             // Mock a resolved value
@@ -171,8 +170,7 @@ describe("User", () => {
             const response = await request(app).post("/api/users").send({
                 name: "John Doe",
                 email: "john@example.com",
-                // gitguardian:ignore
-                password: process.env.TEST_PASSWORD,
+                password: "m#P52s@ap$V",
             })
 
             expect(response.status).toBe(500)

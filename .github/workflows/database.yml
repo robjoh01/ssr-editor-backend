@@ -39,8 +39,6 @@ jobs:
                   npm run build --if-present
 
             - name: Run Tests
-              env:
-                  TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
               run: npm run test:silent
 
             - name: Update Coverage Badge
