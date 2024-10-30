@@ -4,8 +4,25 @@ import { ObjectId } from "mongodb"
 import { getDb } from "@utils/database.js"
 import { fetchDocument } from "@collections/documents.js"
 
-import authenticateJWT from "@/middlewares/authenticateJWT.js"
+import authenticateJWT from "@middlewares/authenticateJWT.js"
 
+/**
+ * Delete a document.
+ *
+ * Request Headers:
+ *  - `Authorization` (required): The access token of the user.
+ *
+ * Request Parameters:
+ *  - `id` (required): The ID of the document to delete.
+ *
+ * Example API call:
+ * DELETE /api/documents/:id
+ *
+ * @async
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {Promise<void>} Sends a success message or an error message if not deleted.
+ */
 export const del = [
     authenticateJWT(),
     async (req, res) => {
@@ -38,15 +55,14 @@ export const del = [
                 .deleteOne({ _id: new ObjectId(documentId) })
 
             if (!result.acknowledged)
-                return res.status(500).send("Internal server error")
+                return res.status(500).send("Internal Server Error")
 
             if (result.acknowledged && result.deletedCount === 0)
                 return res
                     .status(404)
                     .send(`Document with ID ${documentId} not found.`)
         } catch (err) {
-            console.error(err)
-            return res.status(500).send("Internal server error")
+            return res.status(500).send("Internal Server Error")
         }
 
         return res

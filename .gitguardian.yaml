@@ -1,0 +1,4 @@
+secrets:
+    ignored_matches:
+        - "process.env.TEST_PASSWORD"
+        - "m#P52s@ap$V"

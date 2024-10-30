@@ -4,8 +4,29 @@ import { ObjectId } from "mongodb"
 import { getDb } from "@utils/database.js"
 import { fetchDocument } from "@collections/documents.js"
 
-import authenticateJWT from "@/middlewares/authenticateJWT.js"
+import authenticateJWT from "@middlewares/authenticateJWT.js"
 
+/**
+ * Create a new comment on a document.
+ *
+ * Request Headers:
+ *  - `Authorization` (required): The access token of the user.
+ *
+ * Request Parameters:
+ *  - `id` (required): The ID of the document to comment on.
+ *
+ * Request Body:
+ *  - `position` (required): The position of the comment in the document.
+ *  - `content` (required): The content of the document.
+ *
+ * Example API call:
+ * POST /api/documents/:id/comment
+ *
+ * @async
+ * @param {object} req - The request object containing the comment details in the body.
+ * @param {object} res - The response object, used to send the result back to the client.
+ * @returns {Promise<void>} Sends the created comment as a JSON response or an error message if not created.
+ */
 export const post = [
     authenticateJWT(),
     async (req, res) => {
@@ -47,7 +68,6 @@ export const post = [
             if (!result.acknowledged)
                 return res.status(500).send("Failed to create the comment.")
         } catch (err) {
-            console.error(err)
             return res.status(500).send("Internal Server Error")
         } finally {
             await db.client.close()

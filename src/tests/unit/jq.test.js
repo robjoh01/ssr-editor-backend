@@ -1,5 +1,5 @@
 import jq from "node-jq"
-import { queryJSON, queryString } from "@utils/jq"
+import { queryJSON, queryString } from "@utils/jq.js"
 
 // Mock the jq methods
 jest.mock("node-jq", () => ({

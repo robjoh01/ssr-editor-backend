@@ -6,7 +6,7 @@
     "type": "module",
     "scripts": {
         "test": "jest",
-        "test-silent": "jest --silent",
+        "test:silent": "jest --silent",
         "test:watch": "jest --watch",
         "lint": "npx eslint .",
         "start": "node --loader esm-module-alias/loader --no-warnings src/server.js",
@@ -60,12 +60,12 @@
         "supertest": "^7.0.0"
     },
     "aliases": {
-        "@": "src",
-        "@routes": "src/routes",
-        "@utils": "src/utils",
-        "@views": "src/views",
-        "@middlewares": "src/middlewares",
-        "@collections": "src/collections",
-        "@tests": "src/tests"
+        "@": "./src",
+        "@routes": "./src/routes",
+        "@utils": "./src/utils",
+        "@views": "./src/views",
+        "@middlewares": "./src/middlewares",
+        "@collections": "./src/collections",
+        "@tests": "./src/tests"
     }
 }

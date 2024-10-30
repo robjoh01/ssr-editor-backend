@@ -1,5 +1,7 @@
 "use strict"
 
+import { ObjectId } from "mongodb"
+
 import {
     fetchComment,
     updateComment,
@@ -34,7 +36,6 @@ export const get = [
 
             return res.status(200).json(doc)
         } catch (err) {
-            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },
@@ -70,6 +71,9 @@ export const put = [
 
         if (!id) return res.status(400).send("Bad Request! Missing comment ID.")
 
+        if (!ObjectId.isValid(id))
+            return res.status(400).send("Bad Request! Invalid comment ID.")
+
         const comment = await fetchComment(id)
 
         if (!comment)
@@ -84,15 +88,16 @@ export const put = [
 
         try {
             // Update the comment in the database
-            const updateResult = await updateComment(id, content)
-            if (!updateResult)
+            const result = await updateComment(id, content)
+
+            if (!result.acknowledged)
                 return res
                     .status(404)
                     .send(`No comment found with ID ${id} to update.`)
 
             // If the client requested the updated comment, return it
             if (returnValue) {
-                const updatedComment = await fetchComment(id)
+                const updatedComment = await fetchComment(result.insertedId)
                 return res.status(200).json(updatedComment)
             }
 
@@ -101,10 +106,7 @@ export const put = [
                 .status(200)
                 .send(`Comment with ID ${id} was successfully updated.`)
         } catch (e) {
-            console.error("Error updating comment:", e)
-            return res
-                .status(500)
-                .send("Internal Server Error while updating comment.")
+            return res.status(500).send("Internal Server Error")
         }
     },
 ]
@@ -113,7 +115,7 @@ export const put = [
  * Delete a comment from the database by its ID.
  *
  * Request Headers:
- *  - `accessToken` (required): The access token of the user.
+ *  - `Authorization` (required): The access token of the user.
  *
  * Request Parameters:
  *  - `id` (required): The ID of the comment to delete.
@@ -132,6 +134,9 @@ export const del = [
         const { id } = req.params
 
         if (!id) return res.status(400).send("Bad Request! Missing comment ID.")
+
+        if (!ObjectId.isValid(id))
+            return res.status(400).send("Bad Request! Invalid comment ID.")
 
         // Check if the comment exists
         const comment = await fetchComment(id)
@@ -152,7 +157,6 @@ export const del = [
 
             return res.status(500).send("Failed to delete the comment.")
         } catch (err) {
-            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },

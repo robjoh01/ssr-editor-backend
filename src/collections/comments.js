@@ -30,26 +30,16 @@ export async function fetchAllCommentsFromDocument(documentId) {
 }
 
 /**
- * Retrieve comments from the database with optional filters and sorting.
+ * Retrieve comments from the database.
  *
  * @async
- * @param {object} filters - The filters to apply (e.g., shared, modifiable).
- * @param {object} sortOptions - The sorting options (e.g., { lastUpdated: -1 }).
  * @return {Promise<array>} The resultset as an array of comments.
  */
-export async function fetchAllComments(
-    filters = {},
-    sortOptions = { lastUpdated: -1 }
-) {
+export async function fetchAllComments() {
     const { db } = await getDb()
 
     try {
-        // Apply filters and sorting
-        return await db
-            .collection("comments")
-            .find(filters)
-            .sort(sortOptions)
-            .toArray()
+        return await db.collection("comments").toArray()
     } catch (err) {
         console.error(err)
         return []

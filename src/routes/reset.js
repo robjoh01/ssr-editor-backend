@@ -1,7 +1,7 @@
 "use strict"
 
 import { ObjectId } from "mongodb"
-import { getDb, resetCollection } from "@/utils/database.js"
+import { getDb, resetCollection } from "@utils/database.js"
 import adminJWT from "@middlewares/adminJWT.js"
 
 /* eslint-disable */
@@ -573,7 +573,7 @@ const initialComments = [
  * Reset the database.
  *
  * Request Headers:
- *  - `accessToken` (required): The access token of the user.
+ *  - `Authorization` (required): The access token of the user.
  *
  * Example API call:
  * POST /api/reset
@@ -595,7 +595,6 @@ export const post = [
 
             return res.status(200).send("All collections were reset.")
         } catch (err) {
-            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },

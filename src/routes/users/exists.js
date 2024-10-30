@@ -19,7 +19,7 @@ import adminJWT from "@middlewares/adminJWT.js"
  * @param {object} res - The response object.
  * @returns {Promise<void>} Sends the user as a JSON response or an error message if not found.
  */
-export const get = [
+export const post = [
     adminJWT(),
     async (req, res) => {
         try {
@@ -33,7 +33,6 @@ export const get = [
             const doesUserExist = await checkUserExistsByID(id)
             return res.status(200).json({ exists: doesUserExist })
         } catch (err) {
-            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },

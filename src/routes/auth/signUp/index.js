@@ -2,7 +2,7 @@
 
 import { getDb } from "@utils/database.js"
 import { signAccountToken } from "@utils/token.js"
-import { sendEmailWithTemplate } from "@/utils/email.js"
+import { sendEmailWithTemplate } from "@utils/email.js"
 
 import validator from "validator"
 
@@ -34,8 +34,7 @@ export const post = async (req, res) => {
             return res.status(400).send("User with this email already exists")
         }
     } catch (error) {
-        console.error(error)
-        return res.status(500).send("Internal server error")
+        return res.status(500).send("Internal Server Error")
     }
 
     const token = signAccountToken({

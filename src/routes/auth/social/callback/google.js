@@ -1,8 +1,8 @@
 "use strict"
 
 import passport from "@utils/passport.js"
-import { updateUserLastLogin } from "@/collections/users.js"
-import { generateTokens } from "@/utils/token.js"
+import { updateUserLastLogin } from "@collections/users.js"
+import { generateTokens } from "@utils/token.js"
 
 export const get = (req, res, next) => {
     passport.authenticate("google", { session: false }, async (err, user) => {

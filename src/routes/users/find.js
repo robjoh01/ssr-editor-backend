@@ -10,22 +10,24 @@ import adminJWT from "@middlewares/adminJWT.js"
  *  - `email` (required): The email of the user to retrieve.
  *
  * Example API call:
- * GET /api/users/find
+ * POST /api/users/find
  *
  * @async
  * @param {object} req - The request object.
  * @param {object} res - The response object.
  * @returns {Promise<void>} Sends the user as a JSON response or an error message if not found.
  */
-export const get = [
+export const post = [
     adminJWT(),
     async (req, res) => {
         try {
             const { email } = req.body
 
+            const exactMatch = req.body.exactMatch === "true"
+
             if (!email) return res.status(400).send("Missing email")
 
-            const user = await fetchUserByEmail(email)
+            const user = await fetchUserByEmail(email, exactMatch)
 
             if (!user)
                 return res
@@ -36,7 +38,6 @@ export const get = [
 
             return res.status(200).json(user)
         } catch (err) {
-            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },

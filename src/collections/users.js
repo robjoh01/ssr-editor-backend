@@ -8,7 +8,7 @@ import { hashPassword } from "@utils/crypt.js"
  * Check if a user exists in the database by its id.
  *
  * @param {string} id The id of the user to check.
- * @return {Promise<ObjectId|undefined>} The id of the user if it exists, undefined otherwise.
+ * @return {Promise<boolean>} True if the user exists, false otherwise.
  */
 export async function checkUserExistsByID(id) {
     if (!id) throw new Error("Missing id")
@@ -23,12 +23,12 @@ export async function checkUserExistsByID(id) {
             .collection("users")
             .findOne({ _id: new ObjectId(id) }, { projection: { _id: 1 } })
 
-        if (!user) return undefined
+        if (!user) return false
 
-        return user._id
+        return true
     } catch (err) {
         console.error(err)
-        return undefined
+        return false
     } finally {
         await db.client.close()
     }
@@ -64,26 +64,16 @@ export async function checkUserExistsByEmail(email) {
 }
 
 /**
- * Retrieve users from the database with optional filters and sorting.
+ * Retrieve users from the database.
  *
  * @async
- * @param {object} filters - The filters to apply (e.g., shared, modifiable).
- * @param {object} sortOptions - The sorting options (e.g., { lastUpdated: -1 }).
  * @return {Promise<array>} The resultset as an array of users.
  */
-export async function fetchAllUsers(
-    filters = {},
-    sortOptions = { lastUpdated: -1 }
-) {
+export async function fetchAllUsers() {
     const { db } = await getDb()
 
     try {
-        // Apply filters and sorting
-        return await db
-            .collection("users")
-            .find(filters)
-            .sort(sortOptions)
-            .toArray()
+        return await db.collection("users").toArray()
     } catch (err) {
         console.error(err)
         return []
@@ -134,15 +124,18 @@ export async function fetchUser(id) {
  * @return {Promise<object>} The user as an object.
  * @throws {Error} If the user is not found.
  */
-export async function fetchUserByEmail(email) {
+export async function fetchUserByEmail(email, exactMatch = false) {
     if (!email) throw new Error("Missing email")
 
-    if (!validator.isEmail(email)) throw new Error("Invalid email")
+    if (exactMatch && !validator.isEmail(email))
+        throw new Error("Invalid email")
 
     const { db } = await getDb()
 
     try {
-        return await db.collection("users").findOne({ email })
+        return await db
+            .collection("users")
+            .findOne({ email: exactMatch ? email : { $regex: email } })
     } catch (err) {
         console.error(err)
         return {}
@@ -183,6 +176,11 @@ export async function createUser(user) {
  * @async
  * @param {string} id - The id of the user (required).
  * @param {Object} [user] - Optional properties to update.
+ * @param {Object} [user.name] - The new name of the user.
+ * @param {Object} [user.email] - The new email of the user.
+ * @param {Object} [user.password] - The new password of the user.
+ * @param {Object} [user.stats] - The new stats of the user.
+ * @param {Object} [user.profilePicture] - The new profile picture of the user.
  *
  * @return {Promise<void>}
  * @throws {Error} If the user could not be updated.

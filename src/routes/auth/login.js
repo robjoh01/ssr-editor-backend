@@ -21,28 +21,30 @@ export const post = async (req, res, next) => {
         { session: false },
         async (err, user, info) => {
             if (err) {
-                return res.status(500).send(err.message)
+                return res.status(500).send("Internal Server Error")
             }
 
-            if (!user)
-                return res.status(401).json({
-                    error: info?.message || "Invalid credentials",
-                }) // If no user, return 401
+            if (!user) return res.status(401).send("Invalid credentials")
 
             delete user.passwordHash
-            await updateUserLastLogin(user._id)
 
-            const { accessToken, refreshToken } = generateTokens(user)
+            try {
+                await updateUserLastLogin(user._id)
+                const { accessToken, refreshToken } = generateTokens(user)
 
-            // Store the refresh token in a secure HTTP-only cookie
-            res.cookie("refreshToken", refreshToken, {
-                httpOnly: true,
-                secure: true,
-                sameSite: "None",
-            })
+                // Store the refresh token in a secure HTTP-only cookie
+                res.cookie("refreshToken", refreshToken, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "None",
+                })
 
-            // Send access token to the client
-            return res.status(200).json({ accessToken, user })
+                // Send access token to the client
+                return res.status(200).json({ accessToken, user })
+            } catch (err) {
+                console.error(err)
+                return res.status(500).send("Internal Server Error")
+            }
         }
     )(req, res, next)
 }

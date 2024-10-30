@@ -10,7 +10,9 @@ import authenticateJWT from "@middlewares/authenticateJWT.js"
 export default (options) => [
     authenticateJWT(),
     async (req, res, next) => {
-        const { user } = req
+        const { user, isValid } = req
+
+        if (!isValid) return res.status(404).send("User not found")
 
         if (!user.isAdmin) return res.status(403).send("Not an admin")
 

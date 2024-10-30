@@ -1,5 +1,5 @@
-import { getDb } from "@utils/database.js"
 import { ObjectId } from "mongodb"
+import { getDb } from "@utils/database.js"
 
 /**
  * Check if a document exists in the database by its id.
@@ -32,26 +32,16 @@ export async function checkDocumentExistsByID(id) {
 }
 
 /**
- * Retrieve documents from the database with optional filters and sorting.
+ * Retrieve documents from the database.
  *
  * @async
- * @param {object} filters - The filters to apply (e.g., shared, modifiable).
- * @param {object} sortOptions - The sorting options (e.g., { lastUpdated: -1 }).
  * @return {Promise<array>} The resultset as an array of documents.
  */
-export async function fetchAllDocuments(
-    filters = {},
-    sortOptions = { lastUpdated: -1 }
-) {
+export async function fetchAllDocuments() {
     const { db } = await getDb()
 
     try {
-        // Apply filters and sorting
-        return await db
-            .collection("documents")
-            .find(filters)
-            .sort(sortOptions)
-            .toArray()
+        return await db.collection("documents").toArray()
     } catch (err) {
         console.error(err)
         return []

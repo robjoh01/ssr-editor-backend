@@ -16,7 +16,7 @@ import { router } from "express-file-routing"
 
 import { graphqlHTTP } from "express-graphql"
 import { makeExecutableSchema } from "@graphql-tools/schema"
-import graphqlTypeDefs from "@/utils/graphql/typeDefs.js"
+import graphqlTypeDefs from "@utils/graphql/typeDefs.js"
 import graphqlResolvers from "@utils/graphql/resolvers.js"
 
 import { createServer } from "node:http"

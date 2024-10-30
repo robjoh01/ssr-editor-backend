@@ -7,17 +7,12 @@ import {
     fetchAllComments,
 } from "@collections/comments.js"
 
-import { validateCommentPosition } from "@/utils/regex.js"
+import { validateCommentPosition } from "@utils/regex.js"
 
 import adminJWT from "@middlewares/adminJWT.js"
 
 /**
- * Retrieve all comments with optional filters and sorting.
- *
- * Query Parameters:
- *  - `sort` (optional): Sort the results based on the following options:
- *      - `"lastUpdated"`: Sort by the `updatedAt` field in descending order.
- *      - `"alphabetical"`: Sort by the `title` field in ascending order (alphabetically).
+ * Retrieve all comments.
  *
  * Example API call:
  * GET /api/comments
@@ -25,20 +20,15 @@ import adminJWT from "@middlewares/adminJWT.js"
  * @async
  * @param {object} req - The request object.
  * @param {object} res - The response object.
- * @returns {Promise<void>} Sends an array of comments matching the filters to the client.
+ * @returns {Promise<void>} Sends the comments as a JSON response.
  */
 export const get = [
     adminJWT(),
     async (req, res) => {
         try {
-            // Construct filters based on query parameters
-            const filters = {}
-            const sortOptions = {}
-
-            const comments = await fetchAllComments(filters, sortOptions)
+            const comments = await fetchAllComments()
             return res.status(200).json(comments)
         } catch (e) {
-            console.error("Error fetching comments:", e)
             return res.status(500).send("Internal Server Error")
         }
     },
@@ -48,7 +38,7 @@ export const get = [
  * Create a new comment in the database.
  *
  * Request Headers:
- *  - `accessToken` (required): The access token of the user.
+ *  - `Authorization` (required): The access token of the user.
  *
  * Request Body:
  *  - `position` (required): The position of the comment in the document.
@@ -108,7 +98,6 @@ export const post = [
             const createdDoc = await fetchComment(result.insertedId)
             return res.status(201).json(createdDoc)
         } catch (err) {
-            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },
