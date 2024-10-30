@@ -41,8 +41,8 @@ SSR-Editor uses **WebSockets** for real-time communication, enabling live collab
 - **.env**:
    ```bash
    # App
-   PORT=<your_port> # Server's port
-   SAVE_DELAY=<your_save_delay> # In milliseconds (delay between saving changes for a document)
+   PORT=1337 # Server's port
+   SAVE_DELAY=300 # In milliseconds (delay between saving changes for a document)
 
    # bcrypt
    SALT_ROUNDS=<your_salt_rounds> # For password hashing
@@ -50,6 +50,7 @@ SSR-Editor uses **WebSockets** for real-time communication, enabling live collab
    # JWT Token
    JWT_SECRET=<your_jwt_secret> # For signing access tokens
    JWT_REFRESH_SECRET=<your_jwt_refresh_secret> # For signing refresh tokens
+   JWT_ACCOUNT_SECRET=<your_jwt_account_secret> # For signing account verification tokens
 
    # Github Auth
    GITHUB_CLIENT_ID=<your_client_id> # GitHub's client ID
@@ -58,6 +59,11 @@ SSR-Editor uses **WebSockets** for real-time communication, enabling live collab
    # Google Auth
    GOOGLE_CLIENT_ID=<your_client_id> # Google's client ID
    GOOGLE_CLIENT_SECRET=<your_client_secret> # Google's client secret
+
+   # Mailgun
+   MAILGUN_API_KEY="<your_api_key>" # Mailgun's API key
+   MAILGUN_DOMAIN="<your_domain>" # Mailgun's domain
+   MAILGUN_FROM="<your_email>" # Email address to send emails from
 
    # Database
    DB_USER=<your_username> # MongoDB's username
