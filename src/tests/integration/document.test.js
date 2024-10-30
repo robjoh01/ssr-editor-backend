@@ -20,7 +20,7 @@ import {
 } from "@routes/documents/[id]/index.js"
 
 import { post as commentRoute } from "@routes/documents/[id]/comment.js"
-import { post as shareRoute } from "@routes/documents/[id]/share.js"
+// import { post as shareRoute } from "@routes/documents/[id]/share.js"
 import { del as deleteRoute } from "@routes/documents/[id]/delete.js"
 
 // Mock the implementation of fetchAllDocuments
@@ -87,7 +87,7 @@ describe("Document", () => {
         app.delete("/api/documents/:id", removeRoute)
 
         app.post("/api/documents/:id/comment", commentRoute)
-        app.post("/api/documents/:id/share", shareRoute)
+        // app.post("/api/documents/:id/share", shareRoute)
         app.delete("/api/documents/:id/delete", deleteRoute)
     })
 
