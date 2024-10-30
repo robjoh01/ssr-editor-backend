@@ -32,7 +32,7 @@ const mockUser = {
     _id: "66eae0bd0f6e02824705d72a",
     isAdmin: true,
     email: "bYxkM@example.com",
-    name: "Robin Johannesson",
+    name: "John Doe",
 }
 
 jest.mock("@middlewares/authenticateJWT.js", () =>
