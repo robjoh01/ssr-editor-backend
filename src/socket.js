@@ -124,6 +124,11 @@ export default function initSocket(server) {
                 })
             })
 
+            socket.on("send_message", (documentId, message) => {
+                // Notify all users
+                io.to(documentId).emit("receive_message", message)
+            })
+
             socket.on("send_comment", async ({ text, index, length }) => {
                 try {
                     await createComment({
