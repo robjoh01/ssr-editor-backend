@@ -4,13 +4,13 @@ import authenticateJWT from "@middlewares/authenticateJWT.js"
 import validator from "validator"
 
 import { fetchUser, updateUser, removeUser } from "@collections/users.js"
-import { sendEmailWithTemplate } from "@/utils/email.js"
+import { sendEmailWithTemplate } from "@utils/email.js"
 
 /**
  * Get current user details in the database.
  *
  * Request Headers:
- *  - `accessToken` (required): The access token of the user.
+ *  - `Authorization` (required): The access token of the user.
  *
  * Example API call:
  * GET /api/auth/user
@@ -23,7 +23,10 @@ import { sendEmailWithTemplate } from "@/utils/email.js"
 export const get = [
     authenticateJWT(),
     async (req, res) => {
-        const { user, accessToken } = req
+        const { user, accessToken, isValid } = req
+
+        if (!isValid) return res.status(404).send("User not found")
+
         try {
             const details = await fetchUser(user._id)
 
@@ -40,8 +43,7 @@ export const get = [
                 accessToken,
             })
         } catch (error) {
-            console.error("Error fetching user details:", error)
-            return res.status(500).send("Internal server error")
+            return res.status(500).send("Internal Server Error")
         }
     },
 ]
@@ -50,7 +52,7 @@ export const get = [
  * Update current user in the database.
  *
  * Request Headers:
- *  - `accessToken` (required): The access token of the user.
+ *  - `Authorization` (required): The access token of the user.
  *
  * Request Body:
  *  - name (optional): The new name of the user.
@@ -71,7 +73,9 @@ export const get = [
 export const put = [
     authenticateJWT(),
     async (req, res) => {
-        const { user } = req
+        const { user, isValid } = req
+
+        if (!isValid) return res.status(404).send("User not found")
 
         const returnValue = req.query.returnValue === "true"
         const {
@@ -123,10 +127,7 @@ export const put = [
                 .status(200)
                 .json(`User with ID ${user._id} was successfully updated.`)
         } catch (e) {
-            console.error("Error updating user:", e)
-            return res
-                .status(500)
-                .send("Internal Server Error while updating user.")
+            return res.status(500).send("Internal Server Error")
         }
     },
 ]
@@ -135,7 +136,7 @@ export const put = [
  * Delete current user in the database.
  *
  * Request Headers:
- *  - `accessToken` (required): The access token of the user.
+ *  - `Authorization` (required): The access token of the user.
  *
  * Request Body:
  *  - returnValue (optional): If true, the deleted user will be returned in the response.
@@ -151,7 +152,9 @@ export const put = [
 export const del = [
     authenticateJWT(),
     async (req, res) => {
-        const { user } = req
+        const { user, isValid } = req
+
+        if (!isValid) return res.status(404).send("User not found")
 
         if (user.isAdmin)
             return res.status(403).send("Cannot delete admin user.")
@@ -177,10 +180,7 @@ export const del = [
                 .status(200)
                 .json(`User with ID ${user._id} was successfully deleted.`)
         } catch (e) {
-            console.error("Error deleting user:", e)
-            return res
-                .status(500)
-                .send("Internal Server Error while deleting user.")
+            return res.status(500).send("Internal Server Error")
         }
     },
 ]

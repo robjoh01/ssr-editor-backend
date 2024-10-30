@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-import { signToken, verifyRefreshToken } from "@utils/token"
+import { signRefreshToken, verifyRefreshToken } from "@utils/token.js"
 
 // Mock the jwt methods
 jest.mock("jsonwebtoken", () => ({
@@ -16,18 +16,18 @@ describe("Token", () => {
         jest.clearAllMocks()
     })
 
-    describe("signToken", () => {
+    describe("signRefreshToken", () => {
         it("should sign a token with the correct payload", () => {
             // Set up the mock return value for sign
             jwt.sign.mockReturnValue(token)
 
-            const result = signToken(payload)
+            const result = signRefreshToken(payload)
 
             // Check that the sign method was called with the correct arguments
             expect(jwt.sign).toHaveBeenCalledWith(
                 payload,
                 process.env.JWT_SECRET,
-                { expiresIn: "1h" }
+                { expiresIn: "30d" }
             )
             expect(result).toBe(token) // Check that the returned token matches the mocked token
         })

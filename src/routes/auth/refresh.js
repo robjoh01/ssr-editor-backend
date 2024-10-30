@@ -17,9 +17,9 @@ import { signAccessToken, verifyRefreshToken } from "@utils/token.js"
  * @returns {Promise<void>} Sends the new access token as a JSON response.
  */
 export const post = async (req, res) => {
-    const refreshToken = req.cookies.refreshToken
+    const refreshToken = req.cookies?.refreshToken
 
-    if (!refreshToken) return res.status(403).send("Refresh token not provided")
+    if (!refreshToken) return res.status(400).send("Refresh token not provided")
 
     // Verify the refresh token
     const user = await verifyRefreshToken(refreshToken)

@@ -7,34 +7,21 @@ import adminJWT from "@middlewares/adminJWT.js"
 import validator from "validator"
 
 /**
- * Retrieve all users with optional filters and sorting.
- *
- * Query Parameters:
- *  - `sort` (optional): Sort the results based on the following options:
- *      - `"lastUpdated"`: Sort by the `updatedAt` field in descending order.
- *      - `"alphabetical"`: Sort by the `title` field in ascending order (alphabetically).
+ * Retrieve all users.
  *
  * Example API call:
- * GET /api/users?sort=alphabetical
+ * GET /api/users
  *
  * @async
  * @param {object} req - The request object.
  * @param {object} res - The response object.
- * @returns {Promise<void>} Sends an array of users matching the filters to the client.
+ * @returns {Promise<void>} Sends the users as a JSON response.
  */
 export const get = [
     adminJWT(),
     async (req, res) => {
         try {
-            const filters = {}
-            const { sort } = req.query
-
-            // Construct sorting options based on query parameters
-            const sortOptions = {}
-            if (sort === "lastUpdated") sortOptions.updatedAt = -1 // Sort by last updated
-            if (sort === "alphabetical") sortOptions.title = 1 // Sort alphabetically by title
-
-            const users = await fetchAllUsers(filters, sortOptions)
+            const users = await fetchAllUsers()
 
             users.forEach((user) => {
                 delete user.passwordHash
@@ -42,7 +29,6 @@ export const get = [
 
             return res.status(200).json(users)
         } catch (e) {
-            console.error("Error fetching users:", e)
             return res.status(500).send("Internal Server Error")
         }
     },
@@ -52,7 +38,7 @@ export const get = [
  * Create a new user in the database.
  *
  * Request Headers:
- *  - `accessToken` (required): The access token of the user.
+ *  - `Authorization` (required): The access token of the user.
  *
  * Request Body:
  *  - `name` (required): Name of the user.
@@ -97,7 +83,7 @@ export const post = [
             if (!validator.isStrongPassword(password))
                 return res
                     .status(400)
-                    .send("Bad Request! Invalid password format.")
+                    .send("Bad Request! Not a strong password.")
 
             const hashedPassword = await hashPassword(password)
 
@@ -127,7 +113,6 @@ export const post = [
             const createdUser = await fetchUser(result.insertedId)
             return res.status(201).json(createdUser)
         } catch (err) {
-            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },

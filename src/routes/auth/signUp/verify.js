@@ -41,8 +41,7 @@ export const post = async (req, res) => {
             return res.status(400).send("User with this email already exists")
         }
     } catch (error) {
-        console.error(error)
-        return res.status(500).send("Internal server error")
+        return res.status(500).send("Internal Server Error")
     }
 
     return res.status(200).json({ email, expirationTime: exp })

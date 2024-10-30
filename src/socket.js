@@ -3,8 +3,8 @@
 /* eslint-disable */
 
 import { Server } from "socket.io"
-import { fetchDocument, updateDocument } from "@/collections/documents.js"
-import { createComment } from "@/collections/comments.js"
+import { fetchDocument, updateDocument } from "@collections/documents.js"
+import { createComment } from "@collections/comments.js"
 
 import { verifyRefreshToken } from "@utils/token.js"
 import cookie from "cookie"
@@ -12,12 +12,6 @@ import uniqolor from "uniqolor"
 
 function printLog(message) {
     console.log(`[Socket.io, ${new Date().toLocaleTimeString()}] ${message}`)
-}
-
-function printError(message) {
-    console.error(
-        `[Socket.io, ${new Date().toLocaleTimeString()}, ERROR] ${message}`
-    )
 }
 
 export default function initSocket(server) {

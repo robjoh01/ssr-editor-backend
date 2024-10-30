@@ -42,7 +42,6 @@ export const get = (req, res) => {
 
         return res.render("help", { content: htmlContent })
     } catch (err) {
-        console.error(err)
         return res.status(500).send("Internal Server Error")
     }
 }

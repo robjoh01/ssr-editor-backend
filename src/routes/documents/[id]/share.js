@@ -9,13 +9,31 @@ import {
     updateDocument,
 } from "@collections/documents.js"
 
-import { checkUserExistsByEmail } from "@/collections/users.js"
+import { checkUserExistsByEmail } from "@collections/users.js"
 
-import { sendEmailWithTemplate } from "@/utils/email.js"
+import { sendEmailWithTemplate } from "@utils/email.js"
 
-import authenticateJWT from "@/middlewares/authenticateJWT.js"
+import authenticateJWT from "@middlewares/authenticateJWT.js"
 import validator from "validator"
 
+/**
+ * Share a document with other users.
+ *
+ * Request Headers:
+ *  - `Authorization` (required): The access token of the user.
+ *
+ * Request Body:
+ *  - `users` (required): An array of users to share the document with.
+ *  - `redirectURL` (optional): The URL to redirect the user to after sharing the document.
+ *
+ * Example API call:
+ * POST /api/documents/:id/share
+ *
+ * @async
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @returns {Promise<void>} Sends a success message if the document was shared, or an error message if not.
+ */
 export const post = [
     authenticateJWT(),
     async (req, res) => {
@@ -91,7 +109,6 @@ export const post = [
                     { $push: { collaborators: { $each: data } } }
                 )
         } catch (err) {
-            console.error(err)
             return res.status(500).send("Internal Server Error")
         } finally {
             await db.client.close()

@@ -6,7 +6,7 @@ import {
     fetchDocument,
     updateDocument,
     removeDocument,
-} from "@/collections/documents.js"
+} from "@collections/documents.js"
 
 import adminJWT from "@middlewares/adminJWT.js"
 
@@ -40,7 +40,6 @@ export const get = [
 
             return res.status(200).json(doc)
         } catch (err) {
-            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },
@@ -89,13 +88,6 @@ export const get = [
 export const put = [
     adminJWT(),
     async (req, res) => {
-        const { ownerId } = req.body
-
-        if (!ownerId)
-            return res
-                .status(400)
-                .send("Bad Request! Missing document owner ID.")
-
         const { id } = req.params
 
         if (!id)
@@ -112,15 +104,8 @@ export const put = [
 
             if (!document)
                 return res.status(404).send(`Document with ID ${id} not found.`)
-
-            // Check if the user is the owner of the document
-            if (ownerId.toString() !== document.ownerId.toString())
-                return res.status(403).send("Forbidden! You are not the owner.")
         } catch (e) {
-            console.error("Error fetching document:", e)
-            return res
-                .status(500)
-                .send("Internal Server Error while fetching document.")
+            return res.status(500).send("Internal Server Error")
         }
 
         const {
@@ -145,8 +130,9 @@ export const put = [
 
         try {
             // Update the document in the database
-            const updateResult = await updateDocument(id, updateProps)
-            if (!updateResult)
+            const result = await updateDocument(id, updateProps)
+
+            if (!result.acknowledged)
                 return res
                     .status(404)
                     .send(`No document found with ID ${id} to update.`)
@@ -162,10 +148,7 @@ export const put = [
                 .status(200)
                 .send(`Document with ID ${id} was successfully updated.`)
         } catch (e) {
-            console.error("Error updating document:", e)
-            return res
-                .status(500)
-                .send("Internal Server Error while updating document.")
+            return res.status(500).send("Internal Server Error")
         }
     },
 ]
@@ -174,7 +157,7 @@ export const put = [
  * Delete a document from the database by its ID.
  *
  * Request Headers:
- *  - `accessToken` (required): The access token of the user.
+ *  - `Authorization` (required): The access token of the user.
  *
  * Request Parameters:
  *  - `id` (required): The ID of the document to delete.
@@ -217,7 +200,6 @@ export const del = [
 
             return res.status(500).send("Failed to delete the document.")
         } catch (err) {
-            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },

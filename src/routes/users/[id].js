@@ -31,7 +31,6 @@ export const get = [
 
             return res.status(200).json(user)
         } catch (err) {
-            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },
@@ -75,26 +74,37 @@ export const put = [
 
             if (!user)
                 return res.status(404).send(`User with ID ${id} not found.`)
-
-            // Check if the user is the owner of the user
-            if (user._id.toString() !== user.userId.toString())
-                return res.status(403).send("Forbidden! You are not the owner.")
         } catch (e) {
-            console.error("Error fetching user:", e)
-            return res
-                .status(500)
-                .send("Internal Server Error while fetching user.")
+            return res.status(500).send("Internal Server Error")
         }
 
-        const { content = null } = req.body
+        const {
+            name = null,
+            email = null,
+            password = null,
+            stats = null,
+            profilePicture = null,
+        } = req.body
 
-        if (!content)
-            return res.status(400).send("Bad Request! Missing update data.")
+        // Check if any properties are provided for update
+        if (!name && !email && !password && !stats && !profilePicture) {
+            return res.status(400).send("Bad Request! No properties to update.")
+        }
+
+        // Build the update object with only provided fields
+        const updateProps = {}
+
+        if (name) updateProps.name = name
+        if (email) updateProps.email = email
+        if (password) updateProps.password = password
+        if (stats) updateProps.stats = stats
+        if (profilePicture) updateProps.profilePicture = profilePicture
 
         try {
             // Update the user in the database
-            const updateResult = await updateUser(id, content)
-            if (!updateResult)
+            const result = await updateUser(id, updateProps)
+
+            if (!result.acknowledged)
                 return res
                     .status(404)
                     .send(`No user found with ID ${id} to update.`)
@@ -110,10 +120,7 @@ export const put = [
                 .status(200)
                 .send(`User with ID ${id} was successfully updated.`)
         } catch (e) {
-            console.error("Error updating user:", e)
-            return res
-                .status(500)
-                .send("Internal Server Error while updating user.")
+            return res.status(500).send("Internal Server Error")
         }
     },
 ]
@@ -122,7 +129,7 @@ export const put = [
  * Delete a user from the database by its ID.
  *
  * Request Headers:
- *  - `accessToken` (required): The access token of the user.
+ *  - `Authorization` (required): The access token of the user.
  *
  * Request Parameters:
  *  - `id` (required): The ID of the user to delete.
@@ -167,7 +174,6 @@ export const del = [
 
             return res.status(500).send("Failed to delete the user.")
         } catch (err) {
-            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },
