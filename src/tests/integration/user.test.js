@@ -1,8 +1,6 @@
 import request from "supertest"
 import express from "express"
 
-import { ObjectId } from "mongodb"
-
 import {
     fetchAllUsers,
     fetchUser,
@@ -137,7 +135,7 @@ describe("User", () => {
             const newUser = {
                 name: "John Doe",
                 email: "john@example.com",
-                password: "m#P52s@ap$V",
+                password: process.env.TEST_PASSWORD,
             }
 
             // Mock a resolved value
@@ -172,7 +170,7 @@ describe("User", () => {
             const response = await request(app).post("/api/users").send({
                 name: "John Doe",
                 email: "john@example.com",
-                password: "m#P52s@ap$V",
+                password: process.env.TEST_PASSWORD,
             })
 
             expect(response.status).toBe(500)

@@ -4,11 +4,6 @@ import passport from "@utils/passport.js"
 import { updateUserLastLogin } from "@collections/users.js"
 import { generateTokens } from "@utils/token.js"
 
-// Environment variables
-process.env.JWT_SECRET = "your_test_secret"
-process.env.JWT_REFRESH_SECRET = "your_test_secret"
-process.env.JWT_ACCOUNT_SECRET = "your_test_secret"
-
 /**
  * Login a user using their email and password.
  *

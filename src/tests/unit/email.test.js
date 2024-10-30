@@ -25,11 +25,6 @@ jest.mock("validator", () => ({
     isEmail: jest.fn(),
 }))
 
-// Set up mock environment variables
-process.env.MAILGUN_API_KEY = "test-api-key"
-process.env.MAILGUN_DOMAIN = "test-domain"
-process.env.MAILGUN_FROM = "test@example.com"
-
 describe("Email Utility Functions", () => {
     let mg
 
