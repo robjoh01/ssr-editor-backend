@@ -17,15 +17,16 @@ import { fetchUserByEmail, updateUserLastLogin } from "@collections/users.js"
 import { post as loginRoute } from "@routes/auth/login.js"
 import { post as logoutRoute } from "@routes/auth/logout.js"
 import { post as refreshRoute } from "@routes/auth/refresh.js"
+
 // import {
 //     get as getMyselfRoute,
 //     put as putMyselfRoute,
 //     del as delMyselfRoute,
 // } from "@routes/auth/myself.js"
 
-import { post as signUpRoute } from "@routes/auth/signUp/index.js"
-import { post as signUpCompleteRoute } from "@routes/auth/signUp/complete.js"
-import { post as signUpVerifyRoute } from "@routes/auth/signUp/verify.js"
+// import { post as signUpRoute } from "@routes/auth/signUp/index.js"
+// import { post as signUpCompleteRoute } from "@routes/auth/signUp/complete.js"
+// import { post as signUpVerifyRoute } from "@routes/auth/signUp/verify.js"
 
 jest.mock("@collections/users.js", () => ({
     fetchUserByEmail: jest.fn(),
@@ -89,9 +90,9 @@ describe("Auth API Routes", () => {
         // app.put("/api/auth/myself", putMyselfRoute)
         // app.delete("/api/auth/myself", delMyselfRoute)
 
-        app.post("/api/auth/signup", signUpRoute)
-        app.post("/api/auth/signup/complete", signUpCompleteRoute)
-        app.post("/api/auth/signup/verify", signUpVerifyRoute)
+        // app.post("/api/auth/signup", signUpRoute)
+        // app.post("/api/auth/signup/complete", signUpCompleteRoute)
+        // app.post("/api/auth/signup/verify", signUpVerifyRoute)
     })
 
     beforeEach(() => {
