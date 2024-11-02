@@ -27,7 +27,8 @@ export const get = [
         try {
             const documents = await fetchAllDocuments()
             return res.status(200).json(documents)
-        } catch (e) {
+        } catch (err) {
+            console.log(err)
             return res.status(500).send("Internal Server Error")
         }
     },
@@ -59,39 +60,37 @@ export const post = [
     async (req, res) => {
         const { user } = req
 
+        const {
+            title,
+            content = "",
+            collaborators = [],
+            comments = [],
+            stats = {},
+        } = req.body
+
+        // Validate required parameters
+        if (!title) {
+            return res.status(400).send("Bad Request! Missing required title.")
+        }
+
+        // Prepare document with default stats if not provided
+        const document = {
+            title,
+            content,
+            ownerId: new ObjectId(user._id),
+            collaborators,
+            comments,
+            stats: {
+                totalEdits: stats.totalEdits || 0,
+                totalViews: stats.totalViews || 0,
+                activeComments: stats.activeComments || 0,
+                activeUsers: stats.activeUsers || 0,
+            },
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        }
+
         try {
-            const {
-                title,
-                content = "",
-                collaborators = [],
-                comments = [],
-                stats = {},
-            } = req.body
-
-            // Validate required parameters
-            if (!title) {
-                return res
-                    .status(400)
-                    .send("Bad Request! Missing required title.")
-            }
-
-            // Prepare document with default stats if not provided
-            const document = {
-                title,
-                content,
-                ownerId: new ObjectId(user._id),
-                collaborators,
-                comments,
-                stats: {
-                    totalEdits: stats.totalEdits || 0,
-                    totalViews: stats.totalViews || 0,
-                    activeComments: stats.activeComments || 0,
-                    activeUsers: stats.activeUsers || 0,
-                },
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-            }
-
             // Call the create function with the document data
             const result = await createDocument(document)
 
@@ -101,6 +100,7 @@ export const post = [
             const createdDoc = await fetchDocument(result.insertedId)
             return res.status(201).json(createdDoc)
         } catch (err) {
+            console.log(err)
             return res.status(500).send("Internal Server Error")
         }
     },

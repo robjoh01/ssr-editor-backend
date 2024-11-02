@@ -19,7 +19,7 @@ import authenticateJWT from "@middlewares/authenticateJWT.js"
 export const post = [
     authenticateJWT(),
     async (req, res) => {
-        const { user, isValid } = req
+        const { isValid } = req
 
         if (!isValid) return res.status(404).send("User not found")
 

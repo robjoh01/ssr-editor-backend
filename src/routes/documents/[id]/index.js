@@ -40,6 +40,7 @@ export const get = [
 
             return res.status(200).json(doc)
         } catch (err) {
+            console.log(err)
             return res.status(500).send("Internal Server Error")
         }
     },
@@ -104,7 +105,8 @@ export const put = [
 
             if (!document)
                 return res.status(404).send(`Document with ID ${id} not found.`)
-        } catch (e) {
+        } catch (err) {
+            console.log(err)
             return res.status(500).send("Internal Server Error")
         }
 
@@ -147,7 +149,8 @@ export const put = [
             return res
                 .status(200)
                 .send(`Document with ID ${id} was successfully updated.`)
-        } catch (e) {
+        } catch (err) {
+            console.log(err)
             return res.status(500).send("Internal Server Error")
         }
     },
@@ -200,6 +203,7 @@ export const del = [
 
             return res.status(500).send("Failed to delete the document.")
         } catch (err) {
+            console.log(err)
             return res.status(500).send("Internal Server Error")
         }
     },

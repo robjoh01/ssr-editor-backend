@@ -19,6 +19,7 @@ export const post = async (req, res, next) => {
     passport.authenticate(
         "local",
         { session: false },
+        // eslint-disable-next-line
         async (err, user, info) => {
             if (err) {
                 return res.status(500).send("Internal Server Error")

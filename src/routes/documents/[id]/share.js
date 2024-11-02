@@ -6,7 +6,6 @@ import { getDb } from "@utils/database.js"
 import {
     fetchDocument,
     checkDocumentExistsByID,
-    updateDocument,
 } from "@collections/documents.js"
 
 import { checkUserExistsByEmail } from "@collections/users.js"
@@ -44,6 +43,10 @@ export const post = [
         const { id: documentId } = req.params
         const { users, redirectURL } = req.body // Get users array from request body
 
+        if (!users || !Array.isArray(users) || users.length === 0) {
+            return res.status(400).send("Bad Request! Missing users.")
+        }
+
         const doesDocumentExist = await checkDocumentExistsByID(documentId)
 
         if (!doesDocumentExist) {
@@ -54,9 +57,10 @@ export const post = [
 
         const document = await fetchDocument(documentId)
 
-        if (!users || !Array.isArray(users) || users.length === 0) {
-            return res.status(400).send("Bad Request! Missing users.")
-        }
+        if (!document.ownerId.equals(user._id))
+            return res
+                .status(403)
+                .send("You are not the owner of this document")
 
         for (const elem of users) {
             if (!elem.email || !elem.canWrite) {
@@ -109,6 +113,7 @@ export const post = [
                     { $push: { collaborators: { $each: data } } }
                 )
         } catch (err) {
+            console.log(err)
             return res.status(500).send("Internal Server Error")
         } finally {
             await db.client.close()

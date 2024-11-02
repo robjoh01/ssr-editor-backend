@@ -28,7 +28,8 @@ export const get = [
         try {
             const comments = await fetchAllComments()
             return res.status(200).json(comments)
-        } catch (e) {
+        } catch (err) {
+            console.log(err)
             return res.status(500).send("Internal Server Error")
         }
     },
@@ -58,37 +59,35 @@ export const post = [
     async (req, res) => {
         const { user } = req
 
+        const { position, content, documentId } = req.body
+
+        // Validate required parameters
+        if (!position || !content || !documentId) {
+            return res
+                .status(400)
+                .send("Bad Request! Missing required parameters.")
+        }
+
+        if (!validateCommentPosition(position))
+            return res.status(400).send("Bad Request! Invalid position format.")
+
+        if (!ObjectId.isValid(documentId))
+            return res
+                .status(400)
+                .send("Bad Request! Invalid documentId format.")
+
+        // Prepare comment with default stats if not provided
+        const comment = {
+            position,
+            content,
+            documentId: new ObjectId(documentId),
+            userId: new ObjectId(user._id),
+            resolved: false,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        }
+
         try {
-            const { position, content, documentId } = req.body
-
-            // Validate required parameters
-            if (!position || !content || !documentId) {
-                return res
-                    .status(400)
-                    .send("Bad Request! Missing required parameters.")
-            }
-
-            if (!validateCommentPosition(position))
-                return res
-                    .status(400)
-                    .send("Bad Request! Invalid position format.")
-
-            if (!ObjectId.isValid(documentId))
-                return res
-                    .status(400)
-                    .send("Bad Request! Invalid documentId format.")
-
-            // Prepare comment with default stats if not provided
-            const comment = {
-                position,
-                content,
-                documentId: new ObjectId(documentId),
-                userId: new ObjectId(user._id),
-                resolved: false,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-            }
-
             // Call the create function with the comment data
             const result = await createComment(comment)
 
@@ -98,6 +97,7 @@ export const post = [
             const createdDoc = await fetchComment(result.insertedId)
             return res.status(201).json(createdDoc)
         } catch (err) {
+            console.log(err)
             return res.status(500).send("Internal Server Error")
         }
     },

@@ -1,7 +1,5 @@
 "use strict"
 
-/* eslint-disable */
-
 import { Server } from "socket.io"
 import { fetchDocument, updateDocument } from "@collections/documents.js"
 import { createComment } from "@collections/comments.js"
@@ -143,23 +141,26 @@ export default function initSocket(server) {
                 }
             })
 
+            socket.on("send_changes", (content) => {
+                // Notify other users
+                socket.broadcast.to(documentId).emit("receive_changes", content)
+            })
+
             // For debouncing save operations
             let saveTimeout = null
 
-            // Handle saving document changes with a debounce
-            socket.on("send_changes", async ({ title, content }) => {
-                socket.broadcast.to(documentId).emit("receive_changes", content)
-
+            // Callback for save changes
+            socket.on("save_changes", async (data) => {
                 clearTimeout(saveTimeout)
 
                 saveTimeout = setTimeout(async () => {
                     // Notify all users that the document has been saved
-                    io.to(documentId).emit("save_pending")
+                    io.to(documentId).emit("save_incoming")
 
-                    await updateDocument(documentId, { title, content })
+                    await updateDocument(documentId, data)
 
                     // Notify all users that the document has been saved
-                    io.to(documentId).emit("save_success", content)
+                    io.to(documentId).emit("save_complete", data)
                 }, process.env.SAVE_DELAY || 750)
             })
         })

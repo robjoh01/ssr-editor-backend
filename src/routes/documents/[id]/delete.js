@@ -62,6 +62,7 @@ export const del = [
                     .status(404)
                     .send(`Document with ID ${documentId} not found.`)
         } catch (err) {
+            console.log(err)
             return res.status(500).send("Internal Server Error")
         }
 

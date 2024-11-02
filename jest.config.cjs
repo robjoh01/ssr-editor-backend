@@ -4,7 +4,7 @@ module.exports = {
     transform: {
         "^.+\\.jsx?$": "babel-jest",
     },
-    setupFiles: ["<rootDir>/jest.setup.js"],
+    setupFiles: ["<rootDir>/src/tests/setup.js"],
     moduleNameMapper: {
         "^@routes/(.*)$": "<rootDir>/src/routes/$1",
         "^@utils/(.*)$": "<rootDir>/src/utils/$1",

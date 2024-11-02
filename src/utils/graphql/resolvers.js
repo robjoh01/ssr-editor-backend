@@ -653,6 +653,52 @@ const resolvers = {
             }
         },
 
+        async document(parent, { id }, context) {
+            const { db } = await getDb()
+
+            try {
+                return await db
+                    .collection("documents")
+                    .findOne({ _id: new ObjectId(id) })
+            } catch (err) {
+                console.error(err)
+                return null
+            } finally {
+                await db.client.close()
+            }
+        },
+
+        async documents(parent, args, context) {
+            const { db } = await getDb()
+
+            try {
+                const ownedDocuments = await db
+                    .collection("documents")
+                    .find({
+                        ownerId: new ObjectId(context.user._id),
+                    })
+                    .toArray()
+
+                const sharedDocuments = await db
+                    .collection("documents")
+                    .find({
+                        collaborators: {
+                            $elemMatch: {
+                                userId: new ObjectId(context.user._id),
+                            },
+                        },
+                    })
+                    .toArray()
+
+                return [...ownedDocuments, ...sharedDocuments]
+            } catch (err) {
+                console.error(err)
+                return []
+            } finally {
+                await db.client.close()
+            }
+        },
+
         async comments(parent, args, context) {
             const { db } = await getDb()
 

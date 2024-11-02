@@ -27,8 +27,9 @@ import adminJWT from "@middlewares/adminJWT.js"
 export const get = [
     adminJWT(),
     async (req, res) => {
+        const id = req.params.id
+
         try {
-            const id = req.params.id
             const doc = await fetchComment(id)
 
             if (!doc)
@@ -36,6 +37,7 @@ export const get = [
 
             return res.status(200).json(doc)
         } catch (err) {
+            console.log(err)
             return res.status(500).send("Internal Server Error")
         }
     },
@@ -105,7 +107,8 @@ export const put = [
             return res
                 .status(200)
                 .send(`Comment with ID ${id} was successfully updated.`)
-        } catch (e) {
+        } catch (err) {
+            console.log(err)
             return res.status(500).send("Internal Server Error")
         }
     },
@@ -157,6 +160,7 @@ export const del = [
 
             return res.status(500).send("Failed to delete the comment.")
         } catch (err) {
+            console.log(err)
             return res.status(500).send("Internal Server Error")
         }
     },

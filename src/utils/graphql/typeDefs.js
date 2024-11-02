@@ -68,6 +68,8 @@ const typeDefs = `#graphql
         comments: [Comment!]
         ownedDocuments: [Document!]
         sharedDocuments: [Document!]
+        document(id: ID!): Document
+        documents: [Document!]
     }
 
     type Query {

@@ -22,17 +22,18 @@ import adminJWT from "@middlewares/adminJWT.js"
 export const post = [
     adminJWT(),
     async (req, res) => {
+        const { id } = req.body
+
+        if (!id) return res.status(400).send("Missing user ID.")
+
+        if (!ObjectId.isValid(id))
+            return res.status(400).send("Invalid user ID.")
+
         try {
-            const { id } = req.body
-
-            if (!id) return res.status(400).send("Missing user ID.")
-
-            if (!ObjectId.isValid(id))
-                return res.status(400).send("Invalid user ID.")
-
             const doesUserExist = await checkUserExistsByID(id)
             return res.status(200).json({ exists: doesUserExist })
         } catch (err) {
+            console.log(err)
             return res.status(500).send("Internal Server Error")
         }
     },
