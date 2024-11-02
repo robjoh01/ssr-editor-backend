@@ -42,7 +42,8 @@ export const get = [
                 user: details,
                 accessToken,
             })
-        } catch (error) {
+        } catch (err) {
+            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },
@@ -126,7 +127,8 @@ export const put = [
             return res
                 .status(200)
                 .json(`User with ID ${user._id} was successfully updated.`)
-        } catch (e) {
+        } catch (err) {
+            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },
@@ -179,7 +181,8 @@ export const del = [
             return res
                 .status(200)
                 .json(`User with ID ${user._id} was successfully deleted.`)
-        } catch (e) {
+        } catch (err) {
+            console.error(err)
             return res.status(500).send("Internal Server Error")
         }
     },

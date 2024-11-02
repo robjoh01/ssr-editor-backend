@@ -35,13 +35,18 @@ const __dirname = dirname(__filename)
  */
 export const get = (req, res) => {
     try {
-        const dirPath = path.join(__dirname, "/../docs/api.md")
+        const dirPath = path.join(__dirname, "/../../docs/api.md")
 
+        console.log(dirPath)
+        console.log("help")
         const file = fs.readFileSync(dirPath, "utf8")
+        console.log("Test 1")
         const htmlContent = marked.parse(file.toString())
+        console.log("Test 2")
 
         return res.render("help", { content: htmlContent })
     } catch (err) {
+        console.log(err)
         return res.status(500).send("Internal Server Error")
     }
 }

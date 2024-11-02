@@ -109,9 +109,9 @@ export async function createDocument(document) {
  * @async
  * @param {string} id - The id of the document (required).
  * @param {Object} [document] - Optional properties to update.
- * @param {ObjectId} [document.ownerId] - The owner of the document.
  * @param {string} [document.title] - The title of the document.
- * @param {string} [document.content] - The content of the document.
+ * @param {ObjectId} [document.content] - The content of the document.
+ * @param {ObjectId} [document.ownerId] - The owner of the document.
  * @param {Array} [document.collaborators] - List of collaborators to update.
  * @param {Object} [document.stats] - Stats to update (totalEdits, totalViews, activeComments, activeUsers).
  *
@@ -144,11 +144,11 @@ export async function updateDocument(id, document = {}) {
     const { db } = await getDb()
 
     try {
-        await db
+        const result = await db
             .collection("documents")
             .updateOne({ _id: new ObjectId(id) }, { $set: updateData })
 
-        return true
+        return result.modifiedCount > 0
     } catch (err) {
         console.error(err)
         return false

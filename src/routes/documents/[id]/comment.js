@@ -68,6 +68,7 @@ export const post = [
             if (!result.acknowledged)
                 return res.status(500).send("Failed to create the comment.")
         } catch (err) {
+            console.log(err)
             return res.status(500).send("Internal Server Error")
         } finally {
             await db.client.close()

@@ -20,13 +20,13 @@ import adminJWT from "@middlewares/adminJWT.js"
 export const post = [
     adminJWT(),
     async (req, res) => {
+        const { email } = req.body
+
+        const exactMatch = req.body.exactMatch === "true"
+
+        if (!email) return res.status(400).send("Missing email")
+
         try {
-            const { email } = req.body
-
-            const exactMatch = req.body.exactMatch === "true"
-
-            if (!email) return res.status(400).send("Missing email")
-
             const user = await fetchUserByEmail(email, exactMatch)
 
             if (!user)
@@ -38,6 +38,7 @@ export const post = [
 
             return res.status(200).json(user)
         } catch (err) {
+            console.log(err)
             return res.status(500).send("Internal Server Error")
         }
     },

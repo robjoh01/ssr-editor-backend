@@ -595,6 +595,7 @@ export const post = [
 
             return res.status(200).send("All collections were reset.")
         } catch (err) {
+            console.log(err)
             return res.status(500).send("Internal Server Error")
         }
     },

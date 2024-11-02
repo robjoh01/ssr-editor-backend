@@ -1,22 +1,26 @@
 import { sendEmailWithMessage, sendEmailWithTemplate } from "@utils/email.js"
 
 import Mailgun from "mailgun.js"
+
 import FormData from "form-data"
 import ejs from "ejs"
 import path from "path"
 import validator from "validator"
 
-// Mock Mailgun, FormData, and necessary imports
+// Mock Mailgun and its Client
 jest.mock("mailgun.js", () => {
-    const mailgun = {
-        client: jest.fn(() => ({
-            messages: {
-                create: jest.fn(() => Promise.resolve({ status: 200 })),
-            },
-        })),
+    const clientMock = {
+        messages: {
+            create: jest.fn(),
+        },
     }
 
-    return jest.fn(() => mailgun)
+    return {
+        __esModule: true,
+        default: jest.fn(() => ({
+            client: jest.fn(() => clientMock),
+        })),
+    }
 })
 
 jest.mock("form-data", () => jest.fn())
@@ -35,6 +39,7 @@ describe("Email Utility Functions", () => {
 
     describe("sendEmailWithMessage", () => {
         it("should send an email successfully with valid input", async () => {
+            mg.messages.create.mockReturnValue({ status: 200 })
             validator.isEmail.mockReturnValue(true)
 
             const to = ["test1@example.com"]
@@ -45,30 +50,47 @@ describe("Email Utility Functions", () => {
             expect(result).toBe(true)
         })
 
-        it("should throw an error if 'to' parameter is missing", async () => {
+        it("should have correct parameters", async () => {
             await expect(
                 sendEmailWithMessage(null, "Subject", "Message")
             ).rejects.toThrow("To is required")
-        })
 
-        it("should throw an error if an invalid email is provided", async () => {
-            validator.isEmail.mockReturnValue(false)
+            await expect(
+                sendEmailWithMessage("test", "Subject", "Message")
+            ).rejects.toThrow("To must be a non-empty array of emails")
+
             const to = ["invalid-email"]
+
+            await expect(
+                sendEmailWithMessage(to, null, "Message")
+            ).rejects.toThrow("Subject is required")
+
+            await expect(
+                sendEmailWithMessage(to, "Subject", null)
+            ).rejects.toThrow("Message is required")
+
+            validator.isEmail.mockReturnValue(false)
+
             await expect(
                 sendEmailWithMessage(to, "Subject", "Message")
             ).rejects.toThrow("Invalid email address: invalid-email")
         })
 
-        // it("should return false if email sending fails", async () => {
-        //     mg.messages.create.mockRejectedValue(new Error("API error"))
-        //     validator.isEmail.mockReturnValue(true)
+        it("should return false if email sending fails", async () => {
+            // Disable console.error
+            jest.spyOn(console, "error").mockImplementation(jest.fn())
 
-        //     const to = ["test@example.com"]
-        //     const result = await sendEmailWithMessage(to, "Subject", "Message")
+            // Mock a rejected value
+            mg.messages.create.mockRejectedValue(new Error("API error"))
 
-        //     expect(result).toBe(false)
-        //     expect(mg.messages.create).toHaveBeenCalled()
-        // })
+            validator.isEmail.mockReturnValue(true)
+
+            const to = ["test@example.com"]
+            const result = await sendEmailWithMessage(to, "Subject", "Message")
+
+            expect(result).toBe(false)
+            expect(mg.messages.create).toHaveBeenCalledTimes(1)
+        })
     })
 
     describe("sendEmailWithTemplate", () => {
@@ -99,36 +121,63 @@ describe("Email Utility Functions", () => {
             )
         })
 
-        it("should throw an error if 'ejsFile' parameter is missing", async () => {
-            await expect(sendEmailWithTemplate(to, subject)).rejects.toThrow(
-                "EJS file is required"
-            )
+        it("should have correct parameters", async () => {
+            const ejsFile = "test-template.ejs"
+
+            await expect(
+                sendEmailWithTemplate(null, "Subject", ejsFile)
+            ).rejects.toThrow("To is required")
+
+            await expect(
+                sendEmailWithTemplate("test", "Subject", ejsFile)
+            ).rejects.toThrow("To must be a non-empty array of emails")
+
+            const to = ["invalid-email"]
+
+            await expect(
+                sendEmailWithTemplate(to, null, ejsFile)
+            ).rejects.toThrow("Subject is required")
+
+            await expect(
+                sendEmailWithTemplate(to, "Subject", null)
+            ).rejects.toThrow("EJS file is required")
+
+            validator.isEmail.mockReturnValue(false)
+
+            await expect(
+                sendEmailWithTemplate(to, "Subject", ejsFile)
+            ).rejects.toThrow("Invalid email address: invalid-email")
         })
 
-        // it("should return false if template rendering fails", async () => {
-        //     ejs.renderFile.mockRejectedValue(new Error("Rendering error"))
+        it("should return false if template rendering fails", async () => {
+            ejs.renderFile.mockRejectedValue(new Error("Rendering error"))
 
-        //     const result = await sendEmailWithTemplate(
-        //         to,
-        //         subject,
-        //         ejsFile,
-        //         templateData
-        //     )
+            const result = await sendEmailWithTemplate(
+                to,
+                subject,
+                ejsFile,
+                templateData
+            )
 
-        //     expect(result).toBe(false)
-        // })
+            expect(result).toBe(false)
+        })
 
-        // it("should return false if email sending fails", async () => {
-        //     mg.messages.create.mockRejectedValue(new Error("API error"))
-        //     const result = await sendEmailWithTemplate(
-        //         to,
-        //         subject,
-        //         ejsFile,
-        //         templateData
-        //     )
+        it("should return false if email sending fails", async () => {
+            // Disable console.error
+            jest.spyOn(console, "error").mockImplementation(jest.fn())
 
-        //     expect(result).toBe(false)
-        //     expect(mg.messages.create).toHaveBeenCalled()
-        // })
+            // Mock a rejected value
+            mg.messages.create.mockRejectedValue(new Error("API error"))
+
+            const result = await sendEmailWithTemplate(
+                to,
+                subject,
+                ejsFile,
+                templateData
+            )
+
+            expect(result).toBe(false)
+            expect(mg.messages.create).toHaveBeenCalledTimes(1)
+        })
     })
 })

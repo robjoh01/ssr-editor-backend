@@ -28,7 +28,8 @@ export const get = [
             })
 
             return res.status(200).json(users)
-        } catch (e) {
+        } catch (err) {
+            console.log(err)
             return res.status(500).send("Internal Server Error")
         }
     },
@@ -58,52 +59,48 @@ export const get = [
 export const post = [
     adminJWT(),
     async (req, res) => {
+        const {
+            isAdmin,
+            name,
+            email,
+            password,
+            stats = {},
+            profilePicture = "",
+        } = req.body
+
+        // Validate required parameters
+        if (!name || !email || !password) {
+            return res
+                .status(400)
+                .send("Bad Request! Missing required parameters.")
+        }
+
+        if (!validator.isEmail(email))
+            return res.status(400).send("Bad Request! Invalid email format.")
+
+        if (!validator.isStrongPassword(password))
+            return res.status(400).send("Bad Request! Not a strong password.")
+
+        const hashedPassword = await hashPassword(password)
+
+        // Prepare user with default stats if not provided
+        const user = {
+            isAdmin,
+            name,
+            email,
+            passwordHash: hashedPassword,
+            stats: {
+                totalEdits: stats.totalEdits || 0,
+                totalComments: stats.totalComments || 0,
+                totalDocuments: stats.totalDocuments || 0,
+            },
+            profilePicture,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            lastLogin: new Date().toISOString(),
+        }
+
         try {
-            const {
-                isAdmin,
-                name,
-                email,
-                password,
-                stats = {},
-                profilePicture = "",
-            } = req.body
-
-            // Validate required parameters
-            if (!name || !email || !password) {
-                return res
-                    .status(400)
-                    .send("Bad Request! Missing required parameters.")
-            }
-
-            if (!validator.isEmail(email))
-                return res
-                    .status(400)
-                    .send("Bad Request! Invalid email format.")
-
-            if (!validator.isStrongPassword(password))
-                return res
-                    .status(400)
-                    .send("Bad Request! Not a strong password.")
-
-            const hashedPassword = await hashPassword(password)
-
-            // Prepare user with default stats if not provided
-            const user = {
-                isAdmin,
-                name,
-                email,
-                passwordHash: hashedPassword,
-                stats: {
-                    totalEdits: stats.totalEdits || 0,
-                    totalComments: stats.totalComments || 0,
-                    totalDocuments: stats.totalDocuments || 0,
-                },
-                profilePicture,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-                lastLogin: new Date().toISOString(),
-            }
-
             // Call the create function with the user data
             const result = await createUser(user)
 
@@ -113,6 +110,7 @@ export const post = [
             const createdUser = await fetchUser(result.insertedId)
             return res.status(201).json(createdUser)
         } catch (err) {
+            console.log(err)
             return res.status(500).send("Internal Server Error")
         }
     },
